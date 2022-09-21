@@ -1,7 +1,8 @@
 ﻿using aplikacja_webowa___praca_inzynierska.Model;
 using LiteDB;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace aplikacja_webowa___praca_inzynierska.Controllers
 {
@@ -46,5 +47,40 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 return registerEntry;
             }
         }
+
+        [HttpDelete("Delete")]
+
+        public ActionResult<bool> Delete(int id)
+        {
+            //Open database connection
+            using (var db = new LiteDatabase(DbName))
+            {
+                //Get RegisterEntry collection
+                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
+
+                //Delete item by id
+                var isDeleted = collection.Delete(id);
+
+                return isDeleted;
+            }
+        }
+
+        [HttpGet("List")]
+
+        public ActionResult<IEnumerable<RegisterEntry>> List()
+        {
+            //Open database connection
+            using (var db = new LiteDatabase(DbName))
+            {
+                //Get RegisterEntry collection
+                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
+
+                //List all items
+                var registerEntries = collection.FindAll().ToList();
+
+                return Ok(registerEntries);
+            }
+        }
+
     }
 }
