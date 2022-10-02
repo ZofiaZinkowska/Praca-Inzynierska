@@ -3,6 +3,5 @@
 
 <template>
   <main>
-    Ewidencja roślin
   </main>
 </template>
