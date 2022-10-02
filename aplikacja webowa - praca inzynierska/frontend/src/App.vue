@@ -4,5 +4,12 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
 
+  <b-navbar>
+    <b-navbar-nav>
+      <RouterLink to = "/"> 
+        start 
+      </RouterLink>
+    </b-navbar-nav>
+  </b-navbar>
   <RouterView />
 </template>
