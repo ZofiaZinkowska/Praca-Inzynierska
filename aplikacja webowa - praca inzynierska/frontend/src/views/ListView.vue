@@ -2,7 +2,10 @@
     <b-alert class="alert-danger my-3 shadow-sm" dismissible="true" v-bind:show="hasError">Wystąpił błąd</b-alert>
     <b-container class="shadow-sm rounded my-3 p-4 bg-body">
         <h4 class="border-bottom pb-2">Moje roślinki</h4>
-        <b-table-simple>
+        <div class="d-flex justify-content-center mt-5 mb-3" v-if="isLoading">
+            <b-spinner></b-spinner>
+        </div>
+        <b-table-simple v-else>
             <b-thead>
                 <b-tr>
                     <b-th>Id</b-th>
@@ -26,19 +29,23 @@ import type { RegisterEntry } from '../contract/RegisterEntry';
 import axios from 'axios';
 import { defineComponent } from 'vue';
 
-interface Data { items: RegisterEntry[]; hasError:boolean;}
+interface Data { items: RegisterEntry[]; hasError:boolean; isLoading:boolean}
 
 export default defineComponent({
     data(): Data {
-        return { items: [], hasError: false };
+        return { items: [], hasError: false, isLoading: false };
     },
     async mounted(){
         try{
+            this.isLoading = true;
             var response = await axios.get<RegisterEntry[]>('https://localhost:5001/Register/List');
-            this.items= response.data;
+            this.items = response.data;
         }
         catch{
-            this.hasError= true;
+            this.hasError = true;
+        }
+        finally{
+            this.isLoading = false;
         }
     }
 });
