@@ -1,33 +1,14 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-
 <template>
-
-  <b-navbar>
-    <b-navbar-nav>
-        <nav class ="navbar navbar-dark bg-secondary">
-          <a class="navbar-brand" href="#">ewidencja roślin botanicznych</a>
-          <RouterLink to = "/">
-            <div class="collapse navbar-collapse" id="mainmenu">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#">Start</a>
-              </li>
-
-              <li class="nav-item">
-                <a class="nav-link" href="#">Start1</a>
-              </li>
-              
-              <li class="nav-item">
-                <a class="nav-link" href="#">Start3</a>
-              </li>
-
-            </ul>
-          </div>
-          </RouterLink>
-        </nav>
+  <b-navbar variant="dark" class="navbar-dark" sticky="top" container="sm">
+    <b-navbar-brand to="/">Ewidencja roślin botanicznych</b-navbar-brand>
+    <b-navbar-nav class="navbar-collapse">
+      <b-nav-item to="/List">Moje roślinki</b-nav-item>
+      <b-nav-item to="/2">Two</b-nav-item>
+      <b-nav-item to="/3">Three</b-nav-item>
     </b-navbar-nav>
   </b-navbar>
-  <RouterView />
+
+  <main role="main" class="container">
+    <router-view />
+  </main>
 </template>
