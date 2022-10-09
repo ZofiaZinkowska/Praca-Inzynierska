@@ -48,13 +48,14 @@ export default defineComponent({
         async save(){
             try{
                 this.isSaving = true;
-                var response = await axios.post('https://localhost:5001/Register/Save',this.entry);
+                await axios.post('https://localhost:5001/Register/Save',this.entry);
+                this.$router.push({name:'List'});
             }
             catch{
                 this.hasError = true;
             }
             finally{
-                this.isLoading = false; 
+                this.isSaving = false; 
             }
         }
     },
