@@ -11,6 +11,8 @@
                     <b-th>Id</b-th>
                     <b-th>Nazwa</b-th>
                     <b-th>Data dodania</b-th>
+                    <b-th>Edycja</b-th>
+                    <b-th>Data edycji</b-th>
                 </b-tr>
             </b-thead>
             <b-tbody>
@@ -18,6 +20,10 @@
                     <b-td>{{item.id}}</b-td>
                     <b-td>{{item.name}}</b-td>
                     <b-td>{{item.addDate}}</b-td>
+                    <b-td>
+                        <router-link :to = "`/Edit/${item.id}`">Edytuj</router-link>
+                    </b-td>
+                    <b-td>{{item.modificationDate}}</b-td>
                 </b-tr>
             </b-tbody>
         </b-table-simple>

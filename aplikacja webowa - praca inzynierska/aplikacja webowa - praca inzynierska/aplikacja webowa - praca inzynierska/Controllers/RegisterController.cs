@@ -3,6 +3,7 @@ using LiteDB;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace aplikacja_webowa___praca_inzynierska.Controllers
 {
@@ -21,6 +22,8 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             {
                 //Get RegisterEntry collection
                 var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
+
+                registerEntry.ModificationDate = DateTime.UtcNow;
 
                 //Upsert RegisterEntry (insert or update existing)
                 collection.Upsert(registerEntry);
