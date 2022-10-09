@@ -1,7 +1,7 @@
 <template>
     <b-alert class="alert-danger my-3 shadow-sm" dismissible="true" v-bind:show="hasError">Wystąpił błąd</b-alert>
     <b-container class="shadow-sm rounded my-3 p-4 bg-body">
-        <h4 class="border-bottom pb-2">Moje roślinki</h4>
+        <h4 class="border-bottom pb-2">Ewidencja</h4>
         <div class="d-flex justify-content-center mt-5 mb-3" v-if="isLoading">
             <b-spinner></b-spinner>
         </div>
