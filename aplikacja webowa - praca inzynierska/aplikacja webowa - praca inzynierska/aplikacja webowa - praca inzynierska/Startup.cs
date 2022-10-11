@@ -41,7 +41,7 @@ namespace aplikacja_webowa___praca_inzynierska
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseCors(cors=> cors.AllowAnyOrigin().AllowAnyHeader());
+            app.UseCors(cors=> cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

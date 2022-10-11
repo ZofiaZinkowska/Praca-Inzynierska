@@ -1,5 +1,5 @@
 <template>
-    <page-component title="Ewidencja" :is-busy="isLoading" :alert="alert">
+    <page-component title="Ewidencja" :is-busy="isBusy" :alert="alert">
         <b-table-simple>
             <b-thead>
                 <b-tr>
@@ -17,6 +17,8 @@
                     <b-td>{{item.addDate}}</b-td>
                     <b-td>
                         <router-link  :to = "`/Edit/${item.id}`">Edytuj</router-link>
+                        |
+                        <b-link @click="remove(item)">Usuń</b-link>
                     </b-td>
                     <b-td>{{item.modificationDate}}</b-td>
                 </b-tr>
@@ -31,17 +33,19 @@ import axios from 'axios';
 import { defineComponent } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
 import type { Alert } from '@/components/Alert';
+import { remove } from '@vue/shared';
 
-interface Data { items: RegisterEntry[]; alert?: Alert; isLoading:boolean}
+interface Data { items: RegisterEntry[]; alert?: Alert; isBusy:boolean}
 
 export default defineComponent({
     data(): Data {
-        return { items: [], alert: undefined, isLoading: false };
+        return { items: [], alert: undefined, isBusy: false };
     },
-    async mounted() {
-        try {
+    methods:{
+        async load(){
+            try {
             this.alert=undefined;
-            this.isLoading = true;
+            this.isBusy = true;
             var response = await axios.get<RegisterEntry[]>("https://localhost:5001/Register/List");
             this.items = response.data;
         }
@@ -49,8 +53,27 @@ export default defineComponent({
             this.alert = {type:"danger", text:"Wystąpił błąd"};;
         }
         finally {
-            this.isLoading = false;
+            this.isBusy = false;
         }
+        },
+        async remove(item: RegisterEntry){
+            try {
+            this.alert=undefined;
+            this.isBusy = true;
+            const itemIndex = this.items.indexOf(item);
+            await axios.delete(`https://localhost:5001/Register/Delete?id=${item.id}`);
+            this.items.splice(itemIndex, 1);
+        }
+        catch {
+            this.alert = {type:"danger", text:"Wystąpił błąd"};;
+        }
+        finally {
+            this.isBusy = false;
+        }
+        }
+    },
+    async mounted() {
+        await this.load();
     },
     components: { PageComponent }
 });
