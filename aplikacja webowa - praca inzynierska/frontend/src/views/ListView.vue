@@ -1,5 +1,5 @@
 <template>
-    <page-component title="Ewidencja" :is-busy="isLoading">
+    <page-component title="Ewidencja" :is-busy="isLoading" :alert="alert">
         <b-table-simple>
             <b-thead>
                 <b-tr>
@@ -30,21 +30,23 @@ import type { RegisterEntry } from '../contract/RegisterEntry';
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
+import type { Alert } from '@/components/Alert';
 
-interface Data { items: RegisterEntry[]; hasError:boolean; isLoading:boolean}
+interface Data { items: RegisterEntry[]; alert?: Alert; isLoading:boolean}
 
 export default defineComponent({
     data(): Data {
-        return { items: [], hasError: false, isLoading: false };
+        return { items: [], alert: undefined, isLoading: false };
     },
     async mounted() {
         try {
+            this.alert=undefined;
             this.isLoading = true;
             var response = await axios.get<RegisterEntry[]>("https://localhost:5001/Register/List");
             this.items = response.data;
         }
         catch {
-            this.hasError = true;
+            this.alert = {type:"danger", text:"Wystąpił błąd"};;
         }
         finally {
             this.isLoading = false;
