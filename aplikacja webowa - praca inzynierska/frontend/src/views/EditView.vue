@@ -1,11 +1,6 @@
 <template>
-    <b-alert class="alert-danger my-3 shadow-sm" dismissible="true" v-bind:show="hasError">Wystąpił błąd</b-alert>
-    <b-container class="shadow-sm rounded my-3 p-4 bg-body">
-        <h4 class="border-bottom pb-2">Edycja</h4>
-        <div class="d-flex justify-content-center mt-5 mb-3" v-if="isLoading">
-            <b-spinner></b-spinner>
-        </div>
-        <div v-else-if="entry" class="mt-4">
+    <page-component title="Edycja" :is-busy="isLoading" :alert="alert">
+        <div v-if="entry" class="mt-4">
             <b-form-group label="Id" label-for="id">
                 <b-form-input id="id" v-model="entry.id" disabled></b-form-input>
             </b-form-group>
@@ -17,50 +12,55 @@
             </b-form-group>
             <b-button :loading="isSaving" :disabled="isSaving" v-on:click="save()" variant="primary">Zapisz</b-button>
         </div>
-    </b-container>
+    </page-component>
 </template>
 <script lang="ts">
 import type { RegisterEntry } from '../contract/RegisterEntry';
 import axios from 'axios';
 import { defineComponent } from 'vue';
+import PageComponent from '../components/PageComponent.vue';
+import type { Alert } from '@/components/Alert';
 
-interface Data {entry: RegisterEntry|null; hasError: boolean; isLoading: boolean; isSaving:boolean; }
+interface Data {entry: RegisterEntry|null; alert?: Alert; isLoading: boolean; isSaving:boolean; }
 
 export default defineComponent({
     data(): Data {
-        return { entry:null, hasError: false, isLoading: false, isSaving:false };
+        return { entry: null, alert: undefined, isLoading: false, isSaving: false };
     },
     methods: {
-        async load(){
-            try{
+        async load() {
+            try {
+                this.alert=undefined;
                 this.isLoading = true;
                 const id = this.$route.params.id;
                 var response = await axios.get<RegisterEntry>(`https://localhost:5001/Register/Get?id=${id}`);
                 this.entry = response.data;
             }
-            catch{
-                this.hasError = true;
+            catch {
+                this.alert = {type:"danger", text:"Wystąpił błąd"};
             }
-            finally{
+            finally {
                 this.isLoading = false;
             }
         },
-        async save(){
-            try{
+        async save() {
+            try {
+                this.alert=undefined;
                 this.isSaving = true;
-                await axios.post('https://localhost:5001/Register/Save',this.entry);
-                this.$router.push({name:'List'});
+                await axios.post("https://localhost:5001/Register/Save", this.entry);
+                this.$router.push({ name: "List" });
             }
-            catch{
-                this.hasError = true;
+            catch {
+                this.alert = {type:"danger", text:"Wystąpił błąd"};
             }
-            finally{
-                this.isSaving = false; 
+            finally {
+                this.isSaving = false;
             }
         }
     },
-    async mounted(){
+    async mounted() {
         await this.load();
-    }
+    },
+    components: { PageComponent }
 });
 </script>

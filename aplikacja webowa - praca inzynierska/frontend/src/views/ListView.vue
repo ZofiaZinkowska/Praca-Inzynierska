@@ -1,11 +1,6 @@
 <template>
-    <b-alert class="alert-danger my-3 shadow-sm" dismissible="true" v-bind:show="hasError">Wystąpił błąd</b-alert>
-    <b-container class="shadow-sm rounded my-3 p-4 bg-body">
-        <h4 class="border-bottom pb-2">Ewidencja</h4>
-        <div class="d-flex justify-content-center mt-5 mb-3" v-if="isLoading">
-            <b-spinner></b-spinner>
-        </div>
-        <b-table-simple v-else>
+    <page-component title="Ewidencja" :is-busy="isLoading">
+        <b-table-simple>
             <b-thead>
                 <b-tr>
                     <b-th>Id</b-th>
@@ -27,13 +22,14 @@
                 </b-tr>
             </b-tbody>
         </b-table-simple>
-    </b-container>
+    </page-component>
 </template>
 <script lang="ts">
 
 import type { RegisterEntry } from '../contract/RegisterEntry';
 import axios from 'axios';
 import { defineComponent } from 'vue';
+import PageComponent from '../components/PageComponent.vue';
 
 interface Data { items: RegisterEntry[]; hasError:boolean; isLoading:boolean}
 
@@ -41,19 +37,20 @@ export default defineComponent({
     data(): Data {
         return { items: [], hasError: false, isLoading: false };
     },
-    async mounted(){
-        try{
+    async mounted() {
+        try {
             this.isLoading = true;
-            var response = await axios.get<RegisterEntry[]>('https://localhost:5001/Register/List');
+            var response = await axios.get<RegisterEntry[]>("https://localhost:5001/Register/List");
             this.items = response.data;
         }
-        catch{
+        catch {
             this.hasError = true;
         }
-        finally{
+        finally {
             this.isLoading = false;
         }
-    }
+    },
+    components: { PageComponent }
 });
 
 </script>

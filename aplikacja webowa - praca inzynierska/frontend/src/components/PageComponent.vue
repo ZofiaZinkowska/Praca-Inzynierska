@@ -1,7 +1,7 @@
 <template>
-        <b-alert class="my-3 shadow-sm" :variant="alert?.type" dismissible="true" :show="alert">{{alert?.text}}</b-alert>
+        <b-alert class="my-3 shadow-sm" :variant="alert?.type" dismissible="true" :show="!!alert">{{alert?.text}}</b-alert>
     <b-container class="shadow-sm rounded my-3 p-4 bg-body">
-        <h4 class="border-bottom pb-2">Ewidencja</h4>
+        <h4 class="border-bottom pb-2">{{title}}</h4>
         <div class="d-flex justify-content-center mt-5 mb-3" v-if="isBusy">
             <b-spinner></b-spinner>
         </div>
