@@ -10,7 +10,10 @@
             <b-form-group label="Nazwa" label-for="name">
                 <b-form-input id="name" v-model="entry.name"></b-form-input>
             </b-form-group>
-            <b-button :loading="isSaving" :disabled="isSaving" v-on:click="save()" variant="primary">Zapisz</b-button>
+            <div class=" d-flex justify-content-end">
+                <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj</b-button>
+                <b-button :loading="isSaving" :disabled="isSaving" @click="save()" variant="success">Zapisz</b-button>
+            </div>
         </div>
     </page-component>
 </template>

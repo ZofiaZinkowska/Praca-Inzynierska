@@ -16,7 +16,7 @@
                     <b-td>{{item.name}}</b-td>
                     <b-td>{{item.addDate}}</b-td>
                     <b-td>
-                        <router-link :to = "`/Edit/${item.id}`">Edytuj</router-link>
+                        <router-link  :to = "`/Edit/${item.id}`">Edytuj</router-link>
                     </b-td>
                     <b-td>{{item.modificationDate}}</b-td>
                 </b-tr>
