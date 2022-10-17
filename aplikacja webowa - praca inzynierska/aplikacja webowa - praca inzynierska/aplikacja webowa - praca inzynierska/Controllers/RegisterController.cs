@@ -25,8 +25,10 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
                 registerEntry.ModificationDate = DateTime.UtcNow;
 
-                //Upsert RegisterEntry (insert or update existing)
-                collection.Upsert(registerEntry);
+                //Update RegisterEntry
+                var updated = collection.Update(registerEntry);
+                if (!updated)
+                    return NotFound();
 
                 return registerEntry;
             }
