@@ -1,13 +1,16 @@
 <template>
     <page-component title="Ewidencja" :is-busy="isBusy" :alert="alert">
+        <div class=" d-flex justify-content-end">
+            <b-button to = "/Add" variant="success">Dodaj</b-button>
+        </div>
         <b-table-simple>
             <b-thead>
                 <b-tr>
                     <b-th>Id</b-th>
                     <b-th>Nazwa</b-th>
                     <b-th>Data dodania</b-th>
-                    <b-th>Edycja</b-th>
                     <b-th>Data edycji</b-th>
+                    <b-th></b-th>
                 </b-tr>
             </b-thead>
             <b-tbody>
@@ -15,12 +18,11 @@
                     <b-td>{{item.id}}</b-td>
                     <b-td>{{item.name}}</b-td>
                     <b-td>{{item.addDate}}</b-td>
-                    <b-td>
-                        <router-link  :to = "`/Edit/${item.id}`">Edytuj</router-link>
-                        |
-                        <b-link @click="remove(item)">Usuń</b-link>
-                    </b-td>
                     <b-td>{{item.modificationDate}}</b-td>
+                    <b-td class=" d-flex justify-content-end">
+                        <b-button  :to = "`/Edit/${item.id}`" class="me-2 btn-sm">Edytuj</b-button>
+                        <b-button @click="remove(item)" class="btn-sm">Usuń</b-button>
+                    </b-td>
                 </b-tr>
             </b-tbody>
         </b-table-simple>
