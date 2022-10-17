@@ -85,5 +85,27 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             }
         }
 
+        [HttpPut("Add")]
+        public ActionResult<RegisterEntry> Add([FromBody]NewRegisterEntry newRegisterEntry)
+        {
+            //Open database connection
+            using (var db = new LiteDatabase(DbName))
+            {
+                //Get RegisterEntry collection
+                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
+                var now = DateTime.UtcNow;
+                var registerEntry = new RegisterEntry
+                {
+                    AddDate=now,
+                    ModificationDate=now,
+                    Name=newRegisterEntry.Name,
+                };
+                //Insert RegisterEntry 
+                collection.Insert(registerEntry);
+
+                return registerEntry;
+            }
+        }
+
     }
 }
