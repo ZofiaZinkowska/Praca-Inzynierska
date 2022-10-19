@@ -4,7 +4,6 @@
     <b-navbar-nav class="navbar-collapse">
       <b-nav-item to="/List">Ewidencja</b-nav-item>
       <b-nav-item to="/PlantProtection">Ochrona roślin</b-nav-item>
-      <b-nav-item to="/3">Pozostałe informacje</b-nav-item>
     </b-navbar-nav>
   </b-navbar>
 
