@@ -13,4 +13,8 @@
     <PackageReference Include="LiteDB" Version="5.0.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Content\" />
+  </ItemGroup>
+
 </Project>
