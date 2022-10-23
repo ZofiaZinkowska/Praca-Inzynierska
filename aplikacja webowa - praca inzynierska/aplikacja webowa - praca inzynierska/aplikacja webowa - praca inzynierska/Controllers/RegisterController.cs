@@ -109,5 +109,19 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             }
         }
 
+        [HttpGet("Search")]
+        public ActionResult<IEnumerable<RegisterEntry>> Search(string keyword)
+        {
+            using (var db = new LiteDatabase(DbName))
+            {
+                //Get RegisterEntry collection
+                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
+
+                //List all items
+                var registerEntries = collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
+
+                return Ok(registerEntries);
+            }
+        }
     }
 }
