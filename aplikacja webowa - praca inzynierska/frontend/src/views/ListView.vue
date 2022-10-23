@@ -1,8 +1,16 @@
 <template>
     <page-component title="Ewidencja" :is-busy="isBusy" :alert="alert">
-        <div class=" d-flex justify-content-end">
+        <div class="d-flex justify-content-end">
+            <div class="form-outline">
+                <input type="search" id="form1" class="form-control" />
+            </div>
+            <b-button type="button" class="btn btn-primary me-2" variant="success">
+                <font-awesome-icon icon="fa-search"></font-awesome-icon>
+            </b-button>
             <b-button to = "/Add" variant="success">Dodaj</b-button>
+
         </div>
+        
         <b-table-simple>
             <b-thead>
                 <b-tr>
