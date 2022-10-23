@@ -23,7 +23,7 @@ namespace aplikacja_webowa___praca_inzynierska
             services.AddRazorPages();
             services.AddControllers();
 
-            services.AddScoped<ITaxonomyProvider,TaxonomyProvider>();
+            services.AddSingleton<ITaxonomyProvider,TaxonomyProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

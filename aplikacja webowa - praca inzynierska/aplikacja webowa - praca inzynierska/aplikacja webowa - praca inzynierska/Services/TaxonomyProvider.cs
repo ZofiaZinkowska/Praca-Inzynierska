@@ -1,4 +1,5 @@
 ﻿using aplikacja_webowa___praca_inzynierska.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -6,7 +7,16 @@ namespace aplikacja_webowa___praca_inzynierska.Services
 {
     public class TaxonomyProvider : ITaxonomyProvider
     {
+        private readonly Lazy<IEnumerable<TaxonomyItem>> _items;
+        public TaxonomyProvider()
+        {
+            _items = new Lazy<IEnumerable<TaxonomyItem>>(LoadTaxonomy);
+        }
         public IEnumerable<TaxonomyItem> GetTaxonomy()
+        {
+            return _items.Value;
+        }
+        private IEnumerable<TaxonomyItem> LoadTaxonomy()
         {
             using var input = new StreamReader(File.OpenRead("content/classification.txt"));
             input.ReadLine();
