@@ -17,4 +17,10 @@
     <Folder Include="Content\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Content\classification.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
