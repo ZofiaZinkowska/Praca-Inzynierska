@@ -72,7 +72,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         [HttpGet("List")]
 
-        public ActionResult<IEnumerable<RegisterEntry>> List()
+        public ActionResult<IEnumerable<RegisterEntry>> List(string keyword)
         {
             //Open database connection
             using (var db = new LiteDatabase(DbName))
@@ -81,7 +81,9 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
 
                 //List all items
-                var registerEntries = collection.FindAll().ToList();
+                var registerEntries = string.IsNullOrEmpty(keyword)? 
+                    collection.FindAll().ToList():
+                    Search(collection, keyword);
 
                 return Ok(registerEntries);
             }
@@ -109,19 +111,9 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             }
         }
 
-        [HttpGet("Search")]
-        public ActionResult<IEnumerable<RegisterEntry>> Search(string keyword)
+        private IEnumerable<RegisterEntry> Search(ILiteCollection<RegisterEntry> collection, string keyword)
         {
-            using (var db = new LiteDatabase(DbName))
-            {
-                //Get RegisterEntry collection
-                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
-
-                //List all items
-                var registerEntries = collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
-
-                return Ok(registerEntries);
-            }
+           return collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
 }

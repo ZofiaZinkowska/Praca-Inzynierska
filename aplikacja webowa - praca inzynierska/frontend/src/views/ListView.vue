@@ -1,12 +1,12 @@
 <template>
     <page-component title="Ewidencja" :is-busy="isBusy" :alert="alert">
         <div class="d-flex justify-content-end">
-            <div class="form-outline">
-                <input type="search" id="form1" class="form-control" />
-            </div>
-            <b-button type="button" class="btn btn-primary me-2" variant="success">
-                <font-awesome-icon icon="fa-search"></font-awesome-icon>
-            </b-button>
+            <b-input-group class="me-2">
+                <b-form-input type="search" v-model="keyword" @search="load"></b-form-input>
+                <b-button type="button" class="btn btn-primary" variant="success" @click="load">
+                    <font-awesome-icon icon="fa-search"></font-awesome-icon>
+                </b-button>
+            </b-input-group>
             <b-button to = "/Add" variant="success">Dodaj</b-button>
 
         </div>
@@ -45,18 +45,21 @@ import PageComponent from '../components/PageComponent.vue';
 import type { Alert } from '@/components/Alert';
 import { remove } from '@vue/shared';
 
-interface Data { items: RegisterEntry[]; alert?: Alert; isBusy:boolean}
+interface Data { items: RegisterEntry[]; alert?: Alert; isBusy:boolean;
+                keyword?:string; }
 
 export default defineComponent({
     data(): Data {
-        return { items: [], alert: undefined, isBusy: false };
+        return { items: [], alert: undefined, isBusy: false, keyword: undefined };
     },
     methods:{
         async load(){
             try {
             this.alert=undefined;
             this.isBusy = true;
-            var response = await axios.get<RegisterEntry[]>("https://localhost:5001/Register/List");
+            var response = await axios.get<RegisterEntry[]>("https://localhost:5001/Register/List",{
+                params: {keyword: this.keyword}
+            });
             this.items = response.data;
         }
         catch {
