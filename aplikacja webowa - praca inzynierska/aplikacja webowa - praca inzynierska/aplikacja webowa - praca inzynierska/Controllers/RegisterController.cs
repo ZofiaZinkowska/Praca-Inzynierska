@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace aplikacja_webowa___praca_inzynierska.Controllers
 {
@@ -72,7 +73,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         [HttpGet("List")]
 
-        public ActionResult<IEnumerable<RegisterEntry>> List(string keyword)
+        public ActionResult<IEnumerable<RegisterEntry>> List(string keyword, string sortBy, string sortDirection)
         {
             //Open database connection
             using (var db = new LiteDatabase(DbName))
@@ -84,6 +85,8 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 var registerEntries = string.IsNullOrEmpty(keyword)? 
                     collection.FindAll().ToList():
                     Search(collection, keyword);
+
+                registerEntries = Sort(registerEntries, sortBy, sortDirection); 
 
                 return Ok(registerEntries);
             }
@@ -114,6 +117,32 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         private IEnumerable<RegisterEntry> Search(ILiteCollection<RegisterEntry> collection, string keyword)
         {
            return collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        private IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)
+        {
+           var sortFunction = ParseSortBy(sortBy);
+            if (sortFunction == null)
+            {
+                return collection;
+            }
+
+            return sortDirection?.ToLower() switch
+            {
+                "asc" => collection.OrderBy(sortFunction),
+                "desc" => collection.OrderByDescending(sortFunction),
+                _ => collection,
+            };
+        }
+
+        private Func<RegisterEntry,Object> ParseSortBy(string sortBy)
+        {
+           return sortBy?.ToLower() switch
+           {
+               "name" => (x => x.Name),
+               "date" => (x => x.AddDate),
+               _ => null,
+           };
         }
     }
 }
