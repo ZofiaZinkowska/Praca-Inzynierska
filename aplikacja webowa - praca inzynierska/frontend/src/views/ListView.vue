@@ -15,8 +15,8 @@
             <b-thead>
                 <b-tr>
                     <b-th>Id</b-th>
-                    <b-th>Nazwa</b-th>
-                    <b-th>Data dodania</b-th>
+                    <b-th><sort-toggle-component sort-by="name" :value="sort" @toggled="onSort">Nazwa</sort-toggle-component></b-th>
+                    <b-th><sort-toggle-component sort-by="date" :value="sort" @toggled="onSort">Data dodania</sort-toggle-component></b-th>
                     <b-th>Data edycji</b-th>
                     <b-th></b-th>
                 </b-tr>
@@ -44,13 +44,15 @@ import { defineComponent } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
 import type { Alert } from '@/components/Alert';
 import { remove } from '@vue/shared';
+import SortToggleComponent from '../components/SortToggleComponent.vue';
+import type { SortDescription } from '@/components/SortDescription';
 
 interface Data { items: RegisterEntry[]; alert?: Alert; isBusy:boolean;
-                keyword?:string; }
+                keyword?:string; sort?: SortDescription; }
 
 export default defineComponent({
     data(): Data {
-        return { items: [], alert: undefined, isBusy: false, keyword: undefined };
+        return { items: [], alert: undefined, isBusy: false, keyword: undefined, sort: undefined };
     },
     methods:{
         async load(){
@@ -58,7 +60,7 @@ export default defineComponent({
             this.alert=undefined;
             this.isBusy = true;
             var response = await axios.get<RegisterEntry[]>("https://localhost:5001/Register/List",{
-                params: {keyword: this.keyword}
+                params: {keyword: this.keyword, sortBy: this.sort?.by, sortDirection: this.sort?.direction}
             });
             this.items = response.data;
         }
@@ -83,12 +85,16 @@ export default defineComponent({
         finally {
             this.isBusy = false;
         }
-        }
+        },
+        async onSort(sortDescription: SortDescription|undefined){
+        this.sort = sortDescription;
+        await this.load();
+    },
     },
     async mounted() {
         await this.load();
     },
-    components: { PageComponent }
+    components: { PageComponent, SortToggleComponent }
 });
 
 </script>
