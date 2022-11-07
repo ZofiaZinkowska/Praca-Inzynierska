@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using System.Security.Cryptography.X509Certificates;
 using aplikacja_webowa___praca_inzynierska.Contract;
+using aplikacja_webowa___praca_inzynierska.Services;
 
 namespace aplikacja_webowa___praca_inzynierska.Controllers
 {
@@ -15,6 +15,13 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
     {
         private const string DbName = "Register.db";
         private const string RegisterEntryCollectionName = "RegisterEntries";
+
+        public RegisterController(ITaxonomyProvider taxonomyProvider)
+        {
+            _taxonomyProvider = taxonomyProvider;
+        }
+
+        private readonly ITaxonomyProvider _taxonomyProvider;
 
         [HttpPost("Save")]
         public ActionResult<RegisterEntry> Save(int id, [FromBody]SaveRegisterEntryRequest saveRegisterEntryRequest)
@@ -101,12 +108,24 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         private IEnumerable<ListRegisterEntriesItem> GetListItems(IEnumerable<RegisterEntry> registerEntries)
         {
-            var items = registerEntries.Select(entry => new ListRegisterEntriesItem
-            {
-                AddDate = entry.AddDate,
-                Id = entry.Id,
-                ModificationDate = entry.ModificationDate,
-                Name = entry.Name,
+            var scientificNameIDs = registerEntries.Select(x => x.ScientificNameID).Distinct().ToHashSet();
+            var taxonomyItems = _taxonomyProvider.GetTaxonomy()
+                .Where(x => scientificNameIDs.Contains(x.ScientificNameID))
+                .ToDictionary(x => x.ScientificNameID);
+            var items = registerEntries.Select(entry => {
+                var item = new ListRegisterEntriesItem
+                {
+                    AddDate = entry.AddDate,
+                    Id = entry.Id,
+                    ModificationDate = entry.ModificationDate,
+                    Name = entry.Name,
+                };
+                if (entry.ScientificNameID != null && taxonomyItems.TryGetValue(entry.ScientificNameID, out var taxonomyItem))
+                {
+                    item.ScientificName = taxonomyItem.ScientificName;
+                    item.ScientificNameAuthor = taxonomyItem.ScientificNameAuthor;
+                }
+                return item;
             });
             return items;
         }
