@@ -36,7 +36,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 if (registerEntry == null)
                     return NotFound();
 
-                registerEntry.Name = saveRegisterEntryRequest.Name;
+                //registerEntry.Name = saveRegisterEntryRequest.Name;
                 registerEntry.ScientificNameID =saveRegisterEntryRequest.ScientificNameID;
 
                 registerEntry.ModificationDate = DateTime.UtcNow;
@@ -118,7 +118,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                     AddDate = entry.AddDate,
                     Id = entry.Id,
                     ModificationDate = entry.ModificationDate,
-                    Name = entry.Name,
+                    //Name = entry.Name,
                 };
                 if (entry.ScientificNameID != null && taxonomyItems.TryGetValue(entry.ScientificNameID, out var taxonomyItem))
                 {
@@ -143,7 +143,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 {
                     AddDate=now,
                     ModificationDate=now,
-                    Name= saveRegisterEntryRequest.Name,
+                    //Name= saveRegisterEntryRequest.Name,
                     ScientificNameID=saveRegisterEntryRequest.ScientificNameID,
                 };
                 //Insert RegisterEntry 
@@ -155,7 +155,8 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         private IEnumerable<RegisterEntry> Search(ILiteCollection<RegisterEntry> collection, string keyword)
         {
-           return collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            //return collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            return collection.FindAll().ToList();
         }
 
         private IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)
@@ -178,7 +179,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         {
            return sortBy?.ToLower() switch
            {
-               "name" => (x => x.Name),
+               //"name" => (x => x.Name),
                "date" => (x => x.AddDate),
                _ => null,
            };

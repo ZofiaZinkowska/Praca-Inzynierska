@@ -15,7 +15,7 @@
             <b-thead>
                 <b-tr>
                     <b-th>Id</b-th>
-                    <b-th><sort-toggle-component sort-by="name" :value="sort" @toggled="onSort">Nazwa</sort-toggle-component></b-th>
+                    <!--<b-th><sort-toggle-component sort-by="name" :value="sort" @toggled="onSort">Nazwa</sort-toggle-component></b-th>-->
                     <b-th>Nazwa naukowa (Autor)</b-th>
                     <b-th><sort-toggle-component sort-by="date" :value="sort" @toggled="onSort">Data dodania</sort-toggle-component></b-th>
                     <b-th>Data edycji</b-th>
@@ -25,7 +25,7 @@
             <b-tbody>
                 <b-tr v-for="item in items">
                     <b-td>{{item.id}}</b-td>
-                    <b-td>{{item.name}}</b-td>
+                    <!--<b-td>{{item.name}}</b-td>-->
                     <b-td>{{item.scientificName}} ({{item.scientificNameAuthor}})</b-td>
                     <b-td>{{item.addDate}}</b-td>
                     <b-td>{{item.modificationDate}}</b-td>

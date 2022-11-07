@@ -1,9 +1,9 @@
 <template>
     <page-component title="Dodawanie nowego wpisu" :is-busy="isLoading" :alert="alert">
         <div class="mt-4">
-            <b-form-group label="Nazwa" label-for="name">
+            <!-- <b-form-group label="Nazwa" label-for="name">
                 <b-form-input id="name" v-model="entry.name"></b-form-input>
-            </b-form-group>
+            </b-form-group> -->
             <div class=" d-flex justify-content-end">
                 <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj</b-button>
                 <b-button :loading="isSaving" :disabled="isSaving" @click="save()" variant="success">Zapisz</b-button>

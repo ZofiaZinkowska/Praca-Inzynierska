@@ -1,6 +1,6 @@
 export interface RegisterEntry{
     id: number;
-    name: string;
+    //name: string;
     addDate: string;
     modificationDate: string;
 }
