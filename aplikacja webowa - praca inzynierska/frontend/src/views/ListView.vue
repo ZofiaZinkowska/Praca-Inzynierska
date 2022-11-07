@@ -16,6 +16,7 @@
                 <b-tr>
                     <b-th>Id</b-th>
                     <b-th><sort-toggle-component sort-by="name" :value="sort" @toggled="onSort">Nazwa</sort-toggle-component></b-th>
+                    <b-th>Nazwa naukowa (Autor)</b-th>
                     <b-th><sort-toggle-component sort-by="date" :value="sort" @toggled="onSort">Data dodania</sort-toggle-component></b-th>
                     <b-th>Data edycji</b-th>
                     <b-th></b-th>
@@ -25,6 +26,7 @@
                 <b-tr v-for="item in items">
                     <b-td>{{item.id}}</b-td>
                     <b-td>{{item.name}}</b-td>
+                    <b-td>{{item.scientificName}} ({{item.scientificNameAuthor}})</b-td>
                     <b-td>{{item.addDate}}</b-td>
                     <b-td>{{item.modificationDate}}</b-td>
                     <b-td class=" d-flex justify-content-end">
@@ -38,7 +40,7 @@
 </template>
 <script lang="ts">
 
-import type { RegisterEntry } from '../contract/RegisterEntry';
+import type { ListRegisterEntriesItem } from '../contract/ListRegisterEntriesItem';
 import axios from 'axios';
 import { defineComponent } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
@@ -47,7 +49,7 @@ import { remove } from '@vue/shared';
 import SortToggleComponent from '../components/SortToggleComponent.vue';
 import type { SortDescription } from '@/components/SortDescription';
 
-interface Data { items: RegisterEntry[]; alert?: Alert; isBusy:boolean;
+interface Data { items: ListRegisterEntriesItem[]; alert?: Alert; isBusy:boolean;
                 keyword?:string; sort?: SortDescription; }
 
 export default defineComponent({
@@ -59,7 +61,7 @@ export default defineComponent({
             try {
             this.alert=undefined;
             this.isBusy = true;
-            var response = await axios.get<RegisterEntry[]>("https://localhost:5001/Register/List",{
+            var response = await axios.get<ListRegisterEntriesItem[]>("https://localhost:5001/Register/List",{
                 params: {keyword: this.keyword, sortBy: this.sort?.by, sortDirection: this.sort?.direction}
             });
             this.items = response.data;
@@ -71,7 +73,7 @@ export default defineComponent({
             this.isBusy = false;
         }
         },
-        async remove(item: RegisterEntry){
+        async remove(item: ListRegisterEntriesItem){
             try {
             this.alert=undefined;
             this.isBusy = true;
