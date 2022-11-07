@@ -33,6 +33,7 @@ namespace aplikacja_webowa___praca_inzynierska.Services
                     LocalID = values[2],
                     ScientificName = values[3],
                     TaxonRank = values[4],
+                    ScientificNameAuthor = values[6],
                 };
                 items.Add(item);
             }

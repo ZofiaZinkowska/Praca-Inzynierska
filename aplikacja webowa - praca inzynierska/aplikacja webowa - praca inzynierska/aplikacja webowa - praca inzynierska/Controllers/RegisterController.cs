@@ -79,7 +79,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         [HttpGet("List")]
 
-        public ActionResult<IEnumerable<RegisterEntry>> List(string keyword, string sortBy, string sortDirection)
+        public ActionResult<IEnumerable<ListRegisterEntriesItem>> List(string keyword, string sortBy, string sortDirection)
         {
             //Open database connection
             using (var db = new LiteDatabase(DbName))
@@ -92,10 +92,23 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                     collection.FindAll().ToList():
                     Search(collection, keyword);
 
-                registerEntries = Sort(registerEntries, sortBy, sortDirection); 
+                registerEntries = Sort(registerEntries, sortBy, sortDirection);
+                var listRegisterEntriesItems = GetListItems(registerEntries);
 
-                return Ok(registerEntries);
+                return Ok(listRegisterEntriesItems);
             }
+        }
+
+        private IEnumerable<ListRegisterEntriesItem> GetListItems(IEnumerable<RegisterEntry> registerEntries)
+        {
+            var items = registerEntries.Select(entry => new ListRegisterEntriesItem
+            {
+                AddDate = entry.AddDate,
+                Id = entry.Id,
+                ModificationDate = entry.ModificationDate,
+                Name = entry.Name,
+            });
+            return items;
         }
 
         [HttpPut("Add")]
