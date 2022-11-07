@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using aplikacja_webowa___praca_inzynierska.Contract;
 
 namespace aplikacja_webowa___praca_inzynierska.Controllers
 {
@@ -16,7 +17,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         private const string RegisterEntryCollectionName = "RegisterEntries";
 
         [HttpPost("Save")]
-        public ActionResult<RegisterEntry> Save([FromBody]RegisterEntry registerEntry)
+        public ActionResult<RegisterEntry> Save(int id, [FromBody]SaveRegisterEntryRequest saveRegisterEntryRequest)
         {
             //Open database connection
             using (var db = new LiteDatabase(DbName))
@@ -24,12 +25,17 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 //Get RegisterEntry collection
                 var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
 
+                var registerEntry = collection.FindById(id);
+                if (registerEntry == null)
+                    return NotFound();
+
+                registerEntry.Name = saveRegisterEntryRequest.Name;
+                registerEntry.ScientificNameID =saveRegisterEntryRequest.ScientificNameID;
+
                 registerEntry.ModificationDate = DateTime.UtcNow;
 
                 //Update RegisterEntry
-                var updated = collection.Update(registerEntry);
-                if (!updated)
-                    return NotFound();
+                collection.Update(registerEntry);
 
                 return registerEntry;
             }
@@ -93,7 +99,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         }
 
         [HttpPut("Add")]
-        public ActionResult<RegisterEntry> Add([FromBody]NewRegisterEntry newRegisterEntry)
+        public ActionResult<RegisterEntry> Add([FromBody]SaveRegisterEntryRequest saveRegisterEntryRequest)
         {
             //Open database connection
             using (var db = new LiteDatabase(DbName))
@@ -105,7 +111,8 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 {
                     AddDate=now,
                     ModificationDate=now,
-                    Name=newRegisterEntry.Name,
+                    Name= saveRegisterEntryRequest.Name,
+                    ScientificNameID=saveRegisterEntryRequest.ScientificNameID,
                 };
                 //Insert RegisterEntry 
                 collection.Insert(registerEntry);
