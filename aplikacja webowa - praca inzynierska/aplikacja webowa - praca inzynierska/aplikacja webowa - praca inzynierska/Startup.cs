@@ -14,10 +14,10 @@ namespace aplikacja_webowa___praca_inzynierska
         {
             Configuration = configuration;
         }
-
+      
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        //Here we add all the services to the dependency injection container 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();

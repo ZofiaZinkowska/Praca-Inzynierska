@@ -18,14 +18,20 @@ namespace aplikacja_webowa___praca_inzynierska.Services
         }
         private IEnumerable<TaxonomyItem> LoadTaxonomy()
         {
+            //Loading the file classification.txt
             using var input = new StreamReader(File.OpenRead("content/classification.txt"));
+            
+            //Skip first line with headings 
             input.ReadLine();
+
             var items = new List<TaxonomyItem>();
             while (!input.EndOfStream)
             {
                 var line = input.ReadLine();
                 if (string.IsNullOrEmpty(line))continue;
                 var values = line.Split('\t');
+
+                //Fields indexes are documented in the meta.xml file
                 var item = new TaxonomyItem
                 {
                     TaxonID = values[0],
@@ -35,6 +41,7 @@ namespace aplikacja_webowa___praca_inzynierska.Services
                     TaxonRank = values[4],
                     ScientificNameAuthor = values[6],
                 };
+
                 items.Add(item);
             }
             return items;
