@@ -1,4 +1,5 @@
 using aplikacja_webowa___praca_inzynierska.Services;
+using LiteDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ namespace aplikacja_webowa___praca_inzynierska
 {
     public class Startup
     {
+        private const string DbName = "Register.db";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,7 +25,11 @@ namespace aplikacja_webowa___praca_inzynierska
             services.AddRazorPages();
             services.AddControllers();
 
+            services.AddSingleton<ILiteDatabase>(x => new LiteDatabase(DbName));
+
             services.AddSingleton<ITaxonomyProvider,TaxonomyProvider>();
+
+            services.AddScoped<IRegisterRepository,RegisterRepository>();
 
             services.AddHostedService<CachePrimer>();
         }
