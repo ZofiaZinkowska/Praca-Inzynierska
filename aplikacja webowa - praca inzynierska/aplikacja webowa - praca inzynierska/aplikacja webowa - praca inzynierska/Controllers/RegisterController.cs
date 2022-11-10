@@ -13,26 +13,20 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
     public class RegisterController : Controller
     {
-        private const string DbName = "Register.db";
-        private const string RegisterEntryCollectionName = "RegisterEntries";
 
-        public RegisterController(ITaxonomyProvider taxonomyProvider)
+        public RegisterController(ITaxonomyProvider taxonomyProvider, IRegisterRepository registerRepository)
         {
             _taxonomyProvider = taxonomyProvider;
+            _registerRepository = registerRepository;
         }
 
         private readonly ITaxonomyProvider _taxonomyProvider;
+        private readonly IRegisterRepository _registerRepository;
 
         [HttpPost("Save")]
         public ActionResult<RegisterEntry> Save(int id, [FromBody]SaveRegisterEntryRequest saveRegisterEntryRequest)
         {
-            //Open database connection
-            using (var db = new LiteDatabase(DbName))
-            {
-                //Get RegisterEntry collection
-                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
-
-                var registerEntry = collection.FindById(id);
+                var registerEntry = _registerRepository.FindById(id);
                 if (registerEntry == null)
                     return NotFound();
 
@@ -42,68 +36,46 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 registerEntry.ModificationDate = DateTime.UtcNow;
 
                 //Update RegisterEntry
-                collection.Update(registerEntry);
+                _registerRepository.Update(registerEntry);
 
                 return registerEntry;
-            }
         }
 
         [HttpGet("Get")]
 
         public ActionResult<RegisterEntry> Get(int id)
         {
-            //Open database connection
-            using (var db = new LiteDatabase(DbName))
-            {
-                //Get RegisterEntry collection
-                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
-
                 //Find item by id
-                var registerEntry = collection.FindById(id);
+                var registerEntry = _registerRepository.FindById(id);
 
                 if (registerEntry is null) return NotFound();
 
                 return registerEntry;
-            }
         }
 
         [HttpDelete("Delete")]
 
         public ActionResult<bool> Delete(int id)
         {
-            //Open database connection
-            using (var db = new LiteDatabase(DbName))
-            {
-                //Get RegisterEntry collection
-                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
-
                 //Delete item by id
-                var isDeleted = collection.Delete(id);
+                var isDeleted = _registerRepository.Delete(id);
 
                 return isDeleted;
-            }
         }
 
         [HttpGet("List")]
 
         public ActionResult<IEnumerable<ListRegisterEntriesItem>> List(string keyword, string sortBy, string sortDirection)
         {
-            //Open database connection
-            using (var db = new LiteDatabase(DbName))
-            {
-                //Get RegisterEntry collection
-                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
-
                 //List all items
                 var registerEntries = string.IsNullOrEmpty(keyword)? 
-                    collection.FindAll().ToList():
-                    Search(collection, keyword);
+                    _registerRepository.FindAll().ToList():
+                    Search(keyword);
 
                 registerEntries = Sort(registerEntries, sortBy, sortDirection);
                 var listRegisterEntriesItems = GetListItems(registerEntries);
 
                 return Ok(listRegisterEntriesItems);
-            }
         }
 
         private IEnumerable<ListRegisterEntriesItem> GetListItems(IEnumerable<RegisterEntry> registerEntries)
@@ -133,11 +105,6 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         [HttpPut("Add")]
         public ActionResult<RegisterEntry> Add([FromBody]SaveRegisterEntryRequest saveRegisterEntryRequest)
         {
-            //Open database connection
-            using (var db = new LiteDatabase(DbName))
-            {
-                //Get RegisterEntry collection
-                var collection = db.GetCollection<RegisterEntry>(RegisterEntryCollectionName);
                 var now = DateTime.UtcNow;
                 var registerEntry = new RegisterEntry
                 {
@@ -147,16 +114,15 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                     ScientificNameID=saveRegisterEntryRequest.ScientificNameID,
                 };
                 //Insert RegisterEntry 
-                collection.Insert(registerEntry);
+                _registerRepository.Insert(registerEntry);
 
                 return registerEntry;
-            }
         }
 
-        private IEnumerable<RegisterEntry> Search(ILiteCollection<RegisterEntry> collection, string keyword)
+        private IEnumerable<RegisterEntry> Search(string keyword)
         {
             //return collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
-            return collection.FindAll().ToList();
+            return _registerRepository.FindAll().ToList();
         }
 
         private IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)
