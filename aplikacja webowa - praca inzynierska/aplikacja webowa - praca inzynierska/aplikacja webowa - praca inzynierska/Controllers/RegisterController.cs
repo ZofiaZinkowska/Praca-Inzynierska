@@ -125,7 +125,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             return _registerRepository.FindAll().ToList();
         }
 
-        private IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)
+        private static IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)
         {
            var sortFunction = ParseSortBy(sortBy);
             if (sortFunction == null)
@@ -141,7 +141,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             };
         }
 
-        private Func<RegisterEntry,Object> ParseSortBy(string sortBy)
+        private static Func<RegisterEntry,object> ParseSortBy(string sortBy)
         {
            return sortBy?.ToLower() switch
            {
