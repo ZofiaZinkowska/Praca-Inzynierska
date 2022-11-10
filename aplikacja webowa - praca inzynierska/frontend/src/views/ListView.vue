@@ -8,7 +8,6 @@
                 </b-button>
             </b-input-group>
             <b-button to = "/Add" variant="success">Dodaj</b-button>
-
         </div>
         
         <b-table-simple>
