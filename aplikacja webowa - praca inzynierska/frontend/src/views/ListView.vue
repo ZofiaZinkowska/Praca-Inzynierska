@@ -2,10 +2,7 @@
     <page-component title="Ewidencja" :is-busy="isBusy" :alert="alert">
         <div class="d-flex justify-content-end">
             <b-input-group class="me-2">
-                <b-form-input type="search" v-model="keyword" @search="load"></b-form-input>
-                <b-button type="button" class="btn btn-primary" variant="success" @click="load">
-                    <font-awesome-icon icon="fa-search"></font-awesome-icon>
-                </b-button>
+                <taxonomy-selector-component class="form-control"></taxonomy-selector-component>
             </b-input-group>
             <b-button to = "/Add" variant="success">Dodaj</b-button>
         </div>
@@ -47,6 +44,7 @@ import type { Alert } from '@/components/Alert';
 import { remove } from '@vue/shared';
 import SortToggleComponent from '../components/SortToggleComponent.vue';
 import type { SortDescription } from '@/components/SortDescription';
+import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 
 interface Data { items: ListRegisterEntriesItem[]; alert?: Alert; isBusy:boolean;
                 keyword?:string; sort?: SortDescription; }
@@ -95,7 +93,7 @@ export default defineComponent({
     async mounted() {
         await this.load();
     },
-    components: { PageComponent, SortToggleComponent }
+    components: { PageComponent, SortToggleComponent, TaxonomySelectorComponent }
 });
 
 </script>

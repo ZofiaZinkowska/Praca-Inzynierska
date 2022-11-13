@@ -1,5 +1,5 @@
 <template>
-    <simple-type-ahead :items="items" :item-projection="projectItem" :min-input-length="3"></simple-type-ahead>
+    <simple-type-ahead :items="items" :item-projection="projectItem" :min-input-length="3" @on-input="load($event.input)"></simple-type-ahead>
 </template>
 <script lang="ts">
 import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
@@ -7,6 +7,7 @@ import { defineComponent } from 'vue';
 //@ts-ignore ta paczka nie udostępnia typescript typów
 import simpleTypeAhead from 'vue3-simple-typeahead';
 import axios from 'axios';
+import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css';
 
 interface Data { items: SearchTaxonomyItem[] }
 export default defineComponent({
@@ -15,7 +16,7 @@ export default defineComponent({
     },
     methods: {
         projectItem(item: SearchTaxonomyItem) {
-            return `${item.scientificName} (${item.ScientificNameAuthor})`;
+            return `${item.scientificName} (${item.scientificNameAuthor})`;
         },
 
         async load(keyword: string) {
