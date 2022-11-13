@@ -1,0 +1,37 @@
+<template>
+    <simple-type-ahead :items="items" :item-projection="projectItem" :min-input-length="3"></simple-type-ahead>
+</template>
+<script lang="ts">
+import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
+import { defineComponent } from 'vue';
+//@ts-ignore ta paczka nie udostępnia typescript typów
+import simpleTypeAhead from 'vue3-simple-typeahead';
+import axios from 'axios';
+
+interface Data { items: SearchTaxonomyItem[] }
+export default defineComponent({
+    components: {
+        simpleTypeAhead
+    },
+    methods: {
+        projectItem(item: SearchTaxonomyItem) {
+            return `${item.scientificName} (${item.ScientificNameAuthor})`;
+        },
+
+        async load(keyword: string) {
+            if (keyword.length < 3)
+                return;
+            const params = {
+                keyword, count: 8
+            };
+            var response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Search",{
+                params
+            });
+            this.items = response.data;
+        },
+    },
+    data(): Data {
+        return { items: [] };
+    }
+});
+</script>
