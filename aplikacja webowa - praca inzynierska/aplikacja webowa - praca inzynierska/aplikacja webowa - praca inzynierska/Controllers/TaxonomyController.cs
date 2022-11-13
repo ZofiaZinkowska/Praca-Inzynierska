@@ -1,4 +1,5 @@
-﻿using aplikacja_webowa___praca_inzynierska.Model;
+﻿using aplikacja_webowa___praca_inzynierska.Contract;
+using aplikacja_webowa___praca_inzynierska.Model;
 using aplikacja_webowa___praca_inzynierska.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -17,11 +18,24 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         }
 
         [HttpGet("Search")]
-        public ActionResult<IEnumerable<TaxonomyItem>> Search(string keyword)
+        public ActionResult<IEnumerable<SearchTaxonomyItem>> Search(string keyword, int? count)
         {
             var items = _taxonomyProvider.GetTaxonomy();
-            var matchingItems = items.Where(x => x.ScientificName.Contains(keyword, System.StringComparison.OrdinalIgnoreCase));
-            return Ok(matchingItems);
+            var matchingItems = items.Where(x => 
+                x.ScientificName.Contains(keyword, System.StringComparison.OrdinalIgnoreCase) ||
+                x.ScientificNameAuthor.Contains(keyword, System.StringComparison.OrdinalIgnoreCase))
+                .OrderBy(x => x.ScientificName)
+                .ThenBy(x => x.ScientificNameAuthor)
+                .AsEnumerable();
+            if (count.HasValue)
+                matchingItems = matchingItems.Take(count.Value);
+            var results = matchingItems.Select(x => new SearchTaxonomyItem 
+            {
+                ScientificNameID = x.ScientificNameID,
+                ScientificNameAuthor = x.ScientificNameAuthor,
+                ScientificName = x.ScientificName,
+            });
+            return Ok(results);
         }
     }
 }
