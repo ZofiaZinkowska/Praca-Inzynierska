@@ -30,7 +30,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 matchingItems = matchingItems.Take(count.Value);
             var results = matchingItems.Select(x => new SearchTaxonomyItem 
             {
-                ScientificNameID = x.ScientificNameID,
+                TaxonomyID = x.TaxonID,
                 ScientificNameAuthor = x.ScientificNameAuthor,
                 ScientificName = x.ScientificName,
             });

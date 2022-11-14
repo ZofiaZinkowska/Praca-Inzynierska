@@ -30,8 +30,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 if (registerEntry == null)
                     return NotFound();
 
-                //registerEntry.Name = saveRegisterEntryRequest.Name;
-                registerEntry.ScientificNameID =saveRegisterEntryRequest.ScientificNameID;
+                registerEntry.TaxonomyID =saveRegisterEntryRequest.TaxonomyID;
 
                 registerEntry.ModificationDate = DateTime.UtcNow;
 
@@ -80,19 +79,18 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         private IEnumerable<ListRegisterEntriesItem> GetListItems(IEnumerable<RegisterEntry> registerEntries)
         {
-            var scientificNameIDs = registerEntries.Select(x => x.ScientificNameID).Distinct().ToHashSet();
+            var taxonIDs = registerEntries.Select(x => x.TaxonomyID).Distinct().ToHashSet();
             var taxonomyItems = _taxonomyProvider.GetTaxonomy()
-                .Where(x => scientificNameIDs.Contains(x.ScientificNameID))
-                .ToDictionary(x => x.ScientificNameID);
+                .Where(x => taxonIDs.Contains(x.TaxonID))
+                .ToDictionary(x => x.TaxonID);
             var items = registerEntries.Select(entry => {
                 var item = new ListRegisterEntriesItem
                 {
                     AddDate = entry.AddDate,
                     Id = entry.Id,
                     ModificationDate = entry.ModificationDate,
-                    //Name = entry.Name,
                 };
-                if (entry.ScientificNameID != null && taxonomyItems.TryGetValue(entry.ScientificNameID, out var taxonomyItem))
+                if (entry.TaxonomyID != null && taxonomyItems.TryGetValue(entry.TaxonomyID, out var taxonomyItem))
                 {
                     item.ScientificName = taxonomyItem.ScientificName;
                     item.ScientificNameAuthor = taxonomyItem.ScientificNameAuthor;
@@ -110,8 +108,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 {
                     AddDate=now,
                     ModificationDate=now,
-                    //Name= saveRegisterEntryRequest.Name,
-                    ScientificNameID=saveRegisterEntryRequest.ScientificNameID,
+                    TaxonomyID=saveRegisterEntryRequest.TaxonomyID,
                 };
                 //Insert RegisterEntry 
                 _registerRepository.Insert(registerEntry);
@@ -121,7 +118,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         private IEnumerable<RegisterEntry> Search(string keyword)
         {
-            return _registerRepository.Find(x => x.ScientificNameID.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
+            return _registerRepository.Find(x => x.TaxonomyID.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         private static IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)
@@ -144,7 +141,6 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         {
            return sortBy?.ToLower() switch
            {
-               //"name" => (x => x.Name),
                "date" => (x => x.AddDate),
                _ => null,
            };

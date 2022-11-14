@@ -2,7 +2,7 @@
 {
     public class SearchTaxonomyItem
     {
-        public string ScientificNameID { get; set; }
+        public string TaxonomyID { get; set; }
         public string ScientificName { get; set; }
         public string ScientificNameAuthor { get; set; }
     }
