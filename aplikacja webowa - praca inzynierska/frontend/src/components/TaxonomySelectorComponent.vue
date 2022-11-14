@@ -1,5 +1,5 @@
 <template>
-    <simple-type-ahead :items="items" :item-projection="projectItem" :min-input-length="3" @on-input="load($event.input)"></simple-type-ahead>
+    <simple-type-ahead :items="items" :item-projection="projectItem" :min-input-length="3" @on-input="load($event.input)" @select-item="$emit('itemSelected', $event)"></simple-type-ahead>
 </template>
 <script lang="ts">
 import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
@@ -13,6 +13,11 @@ interface Data { items: SearchTaxonomyItem[] }
 export default defineComponent({
     components: {
         simpleTypeAhead
+    },
+    emits: {
+        itemSelected(item: SearchTaxonomyItem) {
+            return true;
+        }
     },
     methods: {
         projectItem(item: SearchTaxonomyItem) {

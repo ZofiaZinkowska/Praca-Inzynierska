@@ -121,8 +121,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
 
         private IEnumerable<RegisterEntry> Search(string keyword)
         {
-            //return collection.Find(x => x.Name.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
-            return _registerRepository.FindAll().ToList();
+            return _registerRepository.Find(x => x.ScientificNameID.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         private static IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)

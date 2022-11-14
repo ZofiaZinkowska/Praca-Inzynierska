@@ -2,7 +2,7 @@
     <page-component title="Ewidencja" :is-busy="isBusy" :alert="alert">
         <div class="d-flex justify-content-end">
             <b-input-group class="me-2">
-                <taxonomy-selector-component class="form-control"></taxonomy-selector-component>
+                <taxonomy-selector-component class="form-control" @item-selected="load($event?.scientificNameID)"></taxonomy-selector-component>
             </b-input-group>
             <b-button to = "/Add" variant="success">Dodaj</b-button>
         </div>
@@ -47,19 +47,19 @@ import type { SortDescription } from '@/components/SortDescription';
 import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 
 interface Data { items: ListRegisterEntriesItem[]; alert?: Alert; isBusy:boolean;
-                keyword?:string; sort?: SortDescription; }
+                sort?: SortDescription; }
 
 export default defineComponent({
     data(): Data {
-        return { items: [], alert: undefined, isBusy: false, keyword: undefined, sort: undefined };
+        return { items: [], alert: undefined, isBusy: false, sort: undefined };
     },
     methods:{
-        async load(){
+        async load(keyword?: string){
             try {
             this.alert=undefined;
             this.isBusy = true;
             var response = await axios.get<ListRegisterEntriesItem[]>("https://localhost:5001/Register/List",{
-                params: {keyword: this.keyword, sortBy: this.sort?.by, sortDirection: this.sort?.direction}
+                params: {keyword, sortBy: this.sort?.by, sortDirection: this.sort?.direction}
             });
             this.items = response.data;
         }
