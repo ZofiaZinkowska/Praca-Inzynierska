@@ -1,8 +1,8 @@
 <template>
     <page-component title="Dodawanie nowego wpisu" :is-busy="isLoading" :alert="alert">
         <div class="mt-4">
-            <b-form-group label="Nazwa" label-for="name">
-                <taxonomy-selector-component @item-selected="taxonomyItem=$event"></taxonomy-selector-component>
+            <b-form-group label="Klasyfikacja roślin" label-for="name">
+                <taxonomy-selector-component @item-selected="taxonomyItem=$event" placeholder="Wyszukaj pozycję w klasyfikacji..."></taxonomy-selector-component>
             </b-form-group>
             <div class=" d-flex justify-content-end">
                 <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj</b-button>
