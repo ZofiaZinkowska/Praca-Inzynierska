@@ -1,5 +1,5 @@
 export interface SearchTaxonomyItem{
-    scientificNameID: string;
+    taxonomyID: string;
     scientificName: string;
     scientificNameAuthor: string;
 }

@@ -3,7 +3,7 @@
         <template #before-spinner>
             <div class="d-flex justify-content-end">
             <b-input-group class="me-2">
-                <taxonomy-selector-component @item-selected="load($event?.scientificNameID)" placeholder="Wyszukaj w ewidencji..."></taxonomy-selector-component>
+                <taxonomy-selector-component @item-selected="load($event?.taxonomyID)" placeholder="Wyszukaj w ewidencji..."></taxonomy-selector-component>
             </b-input-group>
             </div>
         </template>        

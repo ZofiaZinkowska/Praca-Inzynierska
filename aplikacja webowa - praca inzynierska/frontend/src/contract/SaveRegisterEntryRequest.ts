@@ -1,3 +1,3 @@
 export interface SaveRegisterEntryRequest {
-    scientificNameID: string;
+    taxonomyID: string;
 }

@@ -36,7 +36,7 @@ export default defineComponent({
             try {
                 this.alert=undefined;
                 this.isSaving = true;
-                const request: SaveRegisterEntryRequest={scientificNameID: this.taxonomyItem!.scientificNameID};
+                const request: SaveRegisterEntryRequest={taxonomyID: this.taxonomyItem!.taxonomyID};
                 await axios.put("https://localhost:5001/Register/Add", request);
                 this.$router.push({ name: "List" });
             }
