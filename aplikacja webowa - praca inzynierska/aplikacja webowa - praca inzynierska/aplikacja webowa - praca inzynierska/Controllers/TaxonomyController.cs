@@ -1,5 +1,4 @@
 ﻿using aplikacja_webowa___praca_inzynierska.Contract;
-using aplikacja_webowa___praca_inzynierska.Model;
 using aplikacja_webowa___praca_inzynierska.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
