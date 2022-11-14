@@ -1,35 +1,43 @@
 <template>
     <page-component title="Dodawanie nowego wpisu" :is-busy="isLoading" :alert="alert">
         <div class="mt-4">
-            <!-- <b-form-group label="Nazwa" label-for="name">
-                <b-form-input id="name" v-model="entry.name"></b-form-input>
-            </b-form-group> -->
+            <b-form-group label="Nazwa" label-for="name">
+                <taxonomy-selector-component @item-selected="taxonomyItem=$event"></taxonomy-selector-component>
+            </b-form-group>
             <div class=" d-flex justify-content-end">
                 <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj</b-button>
-                <b-button :loading="isSaving" :disabled="isSaving" @click="save()" variant="success">Zapisz</b-button>
+                <b-button :loading="isSaving" :disabled="isSaving || !isValid" @click="save()" variant="success">Zapisz</b-button>
             </div>
         </div>
     </page-component>
 </template>
 <script lang="ts">
-import type { NewRegisterEntry } from '../contract/NewRegisterEntry';
 import axios from 'axios';
+import type {SaveRegisterEntryRequest} from '../contract/SaveRegisterEntryRequest';
 import { defineComponent } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
 import type { Alert } from '@/components/Alert';
+import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
+import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
 
-interface Data {entry: NewRegisterEntry; alert?: Alert; isLoading: boolean; isSaving:boolean; }
+interface Data {taxonomyItem?: SearchTaxonomyItem; alert?: Alert; isLoading: boolean; isSaving:boolean; }
 
 export default defineComponent({
     data(): Data {
-        return { entry: {name:''}, alert: undefined, isLoading: false, isSaving: false };
+        return { taxonomyItem: undefined, alert: undefined, isLoading: false, isSaving: false };
+    },
+    computed: {
+        isValid() {
+            return !! this.taxonomyItem;
+        }
     },
     methods: {
         async save() {
             try {
                 this.alert=undefined;
                 this.isSaving = true;
-                await axios.put("https://localhost:5001/Register/Add", this.entry);
+                const request: SaveRegisterEntryRequest={scientificNameID: this.taxonomyItem!.scientificNameID};
+                await axios.put("https://localhost:5001/Register/Add", request);
                 this.$router.push({ name: "List" });
             }
             catch {
@@ -40,6 +48,6 @@ export default defineComponent({
             }
         }
     },
-    components: { PageComponent }
+    components: { PageComponent, TaxonomySelectorComponent }
 });
 </script>
