@@ -15,7 +15,7 @@ export default defineComponent({
         simpleTypeAhead
     },
     emits: {
-        itemSelected(item: SearchTaxonomyItem) {
+        itemSelected(item?: SearchTaxonomyItem) {
             return true;
         }
     },
@@ -25,6 +25,10 @@ export default defineComponent({
         },
 
         async load(keyword: string) {
+            if (keyword.length === 0){
+                this.items=[];
+                this.$emit('itemSelected', undefined);
+            }
             if (keyword.length < 3)
                 return;
             const params = {

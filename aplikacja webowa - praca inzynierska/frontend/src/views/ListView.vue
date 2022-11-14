@@ -1,12 +1,13 @@
 <template>
     <page-component title="Ewidencja" :is-busy="isBusy" :alert="alert">
-        <div class="d-flex justify-content-end">
+        <template #before-spinner>
+            <div class="d-flex justify-content-end">
             <b-input-group class="me-2">
                 <taxonomy-selector-component class="form-control" @item-selected="load($event?.scientificNameID)"></taxonomy-selector-component>
             </b-input-group>
             <b-button to = "/Add" variant="success">Dodaj</b-button>
-        </div>
-        
+            </div>
+        </template>        
         <b-table-simple>
             <b-thead>
                 <b-tr>
