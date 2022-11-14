@@ -27,7 +27,7 @@
                     <b-td>{{item.modificationDate}}</b-td>
                     <b-td class=" d-flex justify-content-end">
                         <b-button  :to = "`/Edit/${item.id}`" class="me-2 btn-sm">Edytuj</b-button>
-                        <b-button @click="remove(item)" class="btn-sm">Usuń</b-button>
+                        <b-button variant="danger" @click="remove(item)" class="btn-sm">Usuń</b-button>
                     </b-td>
                 </b-tr>
             </b-tbody>
