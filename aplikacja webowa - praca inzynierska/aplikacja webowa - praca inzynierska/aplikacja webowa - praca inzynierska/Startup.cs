@@ -32,6 +32,8 @@ namespace aplikacja_webowa___praca_inzynierska
             services.AddScoped<IRegisterRepository,RegisterRepository>();
 
             services.AddHostedService<CachePrimer>();
+
+            services.AddHostedService<DBInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
