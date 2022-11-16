@@ -25,6 +25,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 return NotFound();
             var result = new TaxonomyItemDetails
             {
+                //TODO: dodać link na stronce
                 AcceptedNameUsageID = matchingItem.AcceptedNameUsageID,
                 Family = matchingItem.Family,
                 Genus = matchingItem.Genus,
