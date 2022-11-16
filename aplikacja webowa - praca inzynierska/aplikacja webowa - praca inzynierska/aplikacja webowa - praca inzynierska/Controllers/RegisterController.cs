@@ -71,8 +71,8 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                     _registerRepository.FindAll().ToList():
                     Search(keyword);
 
-                registerEntries = Sort(registerEntries, sortBy, sortDirection);
                 var listRegisterEntriesItems = GetListItems(registerEntries);
+                listRegisterEntriesItems = Sort(listRegisterEntriesItems, sortBy, sortDirection);
 
                 return Ok(listRegisterEntriesItems);
         }
@@ -121,7 +121,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             return _registerRepository.Find(x => x.TaxonomyID.Contains(keyword, System.StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
-        private static IEnumerable<RegisterEntry> Sort(IEnumerable<RegisterEntry> collection, string sortBy, string sortDirection)
+        private static IEnumerable<ListRegisterEntriesItem> Sort(IEnumerable<ListRegisterEntriesItem> collection, string sortBy, string sortDirection)
         {
            var sortFunction = ParseSortBy(sortBy);
             if (sortFunction == null)
@@ -137,11 +137,12 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             };
         }
 
-        private static Func<RegisterEntry,object> ParseSortBy(string sortBy)
+        private static Func<ListRegisterEntriesItem, object> ParseSortBy(string sortBy)
         {
            return sortBy?.ToLower() switch
            {
                "date" => (x => x.AddDate),
+               "name" => (x => $"{x.ScientificName} ({x.ScientificNameAuthor})"),
                _ => null,
            };
         }

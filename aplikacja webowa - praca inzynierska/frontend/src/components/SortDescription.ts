@@ -1,4 +1,4 @@
-export type SortBy = 'date';
+export type SortBy = 'date'|'name';
 export type SortDirection = 'asc'|'desc';
 export interface SortDescription 
 {
