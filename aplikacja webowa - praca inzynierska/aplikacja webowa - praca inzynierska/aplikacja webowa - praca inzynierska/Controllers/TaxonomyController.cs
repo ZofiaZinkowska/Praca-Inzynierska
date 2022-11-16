@@ -16,6 +16,16 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             _taxonomyProvider = taxonomyProvider;
         }
 
+        [HttpGet("Details")]
+        public ActionResult<TaxonomyItemDetails> Details(string id)
+        {
+            var items = _taxonomyProvider.GetTaxonomy();
+            var matchingItem = items.FirstOrDefault(x => x.TaxonID == id);
+            if (matchingItem == null)
+                return NotFound();
+            return Ok(matchingItem);
+        }
+
         [HttpGet("Search")]
         public ActionResult<IEnumerable<SearchTaxonomyItem>> Search(string keyword, int? count)
         {
