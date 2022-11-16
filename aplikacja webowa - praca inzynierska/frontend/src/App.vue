@@ -9,7 +9,7 @@
         <b-link class="dropdown-item" to="/List">Wykaz roślin</b-link>
         <b-link class="dropdown-item" to="/Add">Dodaj</b-link>
       </b-nav-item-dropdown>
-      <b-nav-item to="/PlantProtection">Ochrona roślin</b-nav-item>
+      <b-nav-item to="/Taxonomy">Klasyfikacja</b-nav-item>
     </b-navbar-nav>
   </b-navbar>
 
