@@ -40,6 +40,13 @@ namespace aplikacja_webowa___praca_inzynierska.Services
                     ScientificName = values[3],
                     TaxonRank = values[4],
                     ScientificNameAuthor = values[6],
+                    Family = values[7],
+                    Subfamily = values[8],
+                    Genus = values[11],
+                    SpecificEpithet = values[13],
+                    NamePublishedIn = values[17],
+                    TaxonomicStatus = values[18],
+                    AcceptedNameUsageID = values[19],
                 };
 
                 items.Add(item);
