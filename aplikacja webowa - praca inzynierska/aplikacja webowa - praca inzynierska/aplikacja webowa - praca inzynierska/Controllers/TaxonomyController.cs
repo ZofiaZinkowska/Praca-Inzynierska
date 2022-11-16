@@ -23,7 +23,20 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
             var matchingItem = items.FirstOrDefault(x => x.TaxonID == id);
             if (matchingItem == null)
                 return NotFound();
-            return Ok(matchingItem);
+            var result = new TaxonomyItemDetails
+            {
+                AcceptedNameUsageID = matchingItem.AcceptedNameUsageID,
+                Family = matchingItem.Family,
+                Genus = matchingItem.Genus,
+                Id = matchingItem.TaxonID,
+                NamePublishedIn = matchingItem.NamePublishedIn,
+                ScientificName = matchingItem.ScientificName,
+                ScientificNameAuthor = matchingItem.ScientificNameAuthor,
+                SpecificEpithet = matchingItem.SpecificEpithet,
+                Subfamily = matchingItem.Subfamily,
+                TaxonomicStatus = matchingItem.TaxonomicStatus
+            };
+            return Ok(result);
         }
 
         [HttpGet("Search")]

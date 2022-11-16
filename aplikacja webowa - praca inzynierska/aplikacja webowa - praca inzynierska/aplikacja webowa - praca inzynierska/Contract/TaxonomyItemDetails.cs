@@ -2,7 +2,7 @@
 {
     public class TaxonomyItemDetails
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string ScientificName { get; set; }
         public string ScientificNameAuthor { get; set; }
         public string Family { get; set; }
