@@ -1,4 +1,5 @@
 ﻿using aplikacja_webowa___praca_inzynierska.Model;
+using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,14 +9,24 @@ namespace aplikacja_webowa___praca_inzynierska.Services
     public class TaxonomyProvider : ITaxonomyProvider
     {
         private readonly Lazy<IEnumerable<TaxonomyItem>> _items;
-        public TaxonomyProvider()
+        private readonly ILiteDatabase _database;
+        private readonly ILiteCollection<TaxonomyCode> _codes;
+        public TaxonomyProvider(ILiteDatabase database)
         {
             _items = new Lazy<IEnumerable<TaxonomyItem>>(LoadTaxonomy);
+            _database = database;
+            _codes = _database.GetCollection<TaxonomyCode>();
         }
         public IEnumerable<TaxonomyItem> GetTaxonomy()
         {
             return _items.Value;
         }
+
+        public void Insert(TaxonomyCode code)
+        {
+            _codes.Insert(code);
+        }
+
         private IEnumerable<TaxonomyItem> LoadTaxonomy()
         {
             //Loading the file classification.txt

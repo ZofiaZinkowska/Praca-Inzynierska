@@ -18,6 +18,7 @@ namespace aplikacja_webowa___praca_inzynierska.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             InitializeRegistriesCollection();
+            InitializeTaxonomyCodesCollection();
             return Task.CompletedTask;
         }
 
@@ -36,6 +37,15 @@ namespace aplikacja_webowa___praca_inzynierska.Services
 
             //szybsze wyszukiwanie po id taxonomy
             registries.EnsureIndex(x => x.TaxonomyID);
+        }
+
+        private void InitializeTaxonomyCodesCollection()
+        {
+            _liteDatabase.Mapper.Entity<TaxonomyCode>().Id(x => x.Code);
+
+            var codes = _liteDatabase.GetCollection<TaxonomyCode>();
+
+            codes.EnsureIndex(x => x.Code);
         }
     }
 }
