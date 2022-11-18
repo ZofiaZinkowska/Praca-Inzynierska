@@ -1,4 +1,5 @@
 ﻿using aplikacja_webowa___praca_inzynierska.Contract;
+using aplikacja_webowa___praca_inzynierska.Model;
 using aplikacja_webowa___praca_inzynierska.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -14,6 +15,26 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         public TaxonomyController(ITaxonomyProvider taxonomyProvider)
         {
             _taxonomyProvider = taxonomyProvider;
+        }
+
+        [HttpPut("AddCode")]
+        public ActionResult AddCode([FromBody] SaveTaxonomyCodeRequest saveTaxonomyCodeRequest)
+        {
+            var taxonomyCode = new TaxonomyCode
+            {
+                Code = saveTaxonomyCodeRequest.Code,
+                TaxonomyID = saveTaxonomyCodeRequest.TaxonomyID,
+            };
+            _taxonomyProvider.Insert(taxonomyCode);
+            return NoContent();
+        }
+
+        [HttpGet("Find")]
+        public ActionResult<IEnumerable<SearchTaxonomyItem>> Find(string code)
+        {
+            var matchingItems = _taxonomyProvider.Find(code);
+            var results = matchingItems.Select(x => MapSearchItem(x));
+            return Ok(results);
         }
 
         [HttpGet("Details")]
@@ -52,13 +73,17 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 .AsEnumerable();
             if (count.HasValue)
                 matchingItems = matchingItems.Take(count.Value);
-            var results = matchingItems.Select(x => new SearchTaxonomyItem 
+            var results = matchingItems.Select(x => MapSearchItem(x));
+            return Ok(results);
+        }
+        private static SearchTaxonomyItem MapSearchItem(TaxonomyItem x)
+        {
+            return new SearchTaxonomyItem
             {
                 TaxonomyID = x.TaxonomyID,
                 ScientificNameAuthor = x.ScientificNameAuthor,
                 ScientificName = x.ScientificName,
-            });
-            return Ok(results);
+            };
         }
     }
 }
