@@ -3,6 +3,7 @@ using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace aplikacja_webowa___praca_inzynierska.Services
 {
@@ -17,6 +18,17 @@ namespace aplikacja_webowa___praca_inzynierska.Services
             _database = database;
             _codes = _database.GetCollection<TaxonomyCode>();
         }
+
+        public IEnumerable<TaxonomyItem> Find(string code)
+        {
+            var taxonomyCode = _codes.FindById(code);
+            if (taxonomyCode == null)
+            {
+                return Enumerable.Empty<TaxonomyItem>();
+            }
+            return GetTaxonomy().Where(x => x.TaxonomyID == taxonomyCode.TaxonomyID);
+        }
+
         public IEnumerable<TaxonomyItem> GetTaxonomy()
         {
             return _items.Value;
@@ -45,7 +57,7 @@ namespace aplikacja_webowa___praca_inzynierska.Services
                 //Fields indexes are documented in the meta.xml file
                 var item = new TaxonomyItem
                 {
-                    TaxonID = values[0],
+                    TaxonomyID = values[0],
                     ScientificNameID = values[1],
                     LocalID = values[2],
                     ScientificName = values[3],

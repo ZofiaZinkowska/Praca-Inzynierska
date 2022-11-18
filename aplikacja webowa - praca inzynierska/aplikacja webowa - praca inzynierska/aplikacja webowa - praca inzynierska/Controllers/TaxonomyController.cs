@@ -20,7 +20,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         public ActionResult<TaxonomyItemDetails> Details(string id)
         {
             var items = _taxonomyProvider.GetTaxonomy();
-            var matchingItem = items.FirstOrDefault(x => x.TaxonID == id);
+            var matchingItem = items.FirstOrDefault(x => x.TaxonomyID == id);
             if (matchingItem == null)
                 return NotFound();
             var result = new TaxonomyItemDetails
@@ -29,7 +29,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 AcceptedNameUsageID = matchingItem.AcceptedNameUsageID,
                 Family = matchingItem.Family,
                 Genus = matchingItem.Genus,
-                Id = matchingItem.TaxonID,
+                Id = matchingItem.TaxonomyID,
                 NamePublishedIn = matchingItem.NamePublishedIn,
                 ScientificName = matchingItem.ScientificName,
                 ScientificNameAuthor = matchingItem.ScientificNameAuthor,
@@ -54,7 +54,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 matchingItems = matchingItems.Take(count.Value);
             var results = matchingItems.Select(x => new SearchTaxonomyItem 
             {
-                TaxonomyID = x.TaxonID,
+                TaxonomyID = x.TaxonomyID,
                 ScientificNameAuthor = x.ScientificNameAuthor,
                 ScientificName = x.ScientificName,
             });

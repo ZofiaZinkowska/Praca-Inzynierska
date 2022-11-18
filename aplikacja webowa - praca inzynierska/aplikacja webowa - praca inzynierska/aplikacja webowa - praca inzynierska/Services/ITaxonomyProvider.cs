@@ -8,5 +8,7 @@ namespace aplikacja_webowa___praca_inzynierska.Services
         IEnumerable<TaxonomyItem> GetTaxonomy();
 
         void Insert(TaxonomyCode code);
+
+        IEnumerable<TaxonomyItem> Find(string code);
     }
 }

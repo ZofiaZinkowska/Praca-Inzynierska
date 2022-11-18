@@ -4,7 +4,7 @@
 
     public class TaxonomyItem
     {
-        public string TaxonID { get; set; } 
+        public string TaxonomyID { get; set; } 
         public string ScientificNameID { get; set; }
         public string LocalID { get; set; }
         public string ScientificName { get; set; }

@@ -81,8 +81,8 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         {
             var taxonIDs = registerEntries.Select(x => x.TaxonomyID).Distinct().ToHashSet();
             var taxonomyItems = _taxonomyProvider.GetTaxonomy()
-                .Where(x => taxonIDs.Contains(x.TaxonID))
-                .ToDictionary(x => x.TaxonID);
+                .Where(x => taxonIDs.Contains(x.TaxonomyID))
+                .ToDictionary(x => x.TaxonomyID);
             var items = registerEntries.Select(entry => {
                 var item = new ListRegisterEntriesItem
                 {
