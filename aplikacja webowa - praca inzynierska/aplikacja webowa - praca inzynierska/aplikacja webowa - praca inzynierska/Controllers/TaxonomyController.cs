@@ -25,7 +25,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 Code = saveTaxonomyCodeRequest.Code,
                 TaxonomyID = saveTaxonomyCodeRequest.TaxonomyID,
             };
-            _taxonomyProvider.Insert(taxonomyCode);
+            _taxonomyProvider.Upsert(taxonomyCode);
             return NoContent();
         }
 

@@ -34,9 +34,9 @@ namespace aplikacja_webowa___praca_inzynierska.Services
             return _items.Value;
         }
 
-        public void Insert(TaxonomyCode code)
+        public void Upsert(TaxonomyCode code)
         {
-            _codes.Insert(code);
+            _codes.Upsert(code);
         }
 
         private IEnumerable<TaxonomyItem> LoadTaxonomy()
