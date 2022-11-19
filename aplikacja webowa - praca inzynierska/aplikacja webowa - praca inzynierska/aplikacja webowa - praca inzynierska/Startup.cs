@@ -22,7 +22,6 @@ namespace aplikacja_webowa___praca_inzynierska
         //Here we add all the services to the dependency injection container 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
             services.AddControllers();
 
             services.AddSingleton<ILiteDatabase>(x => new LiteDatabase(DbName));
@@ -43,23 +42,14 @@ namespace aplikacja_webowa___praca_inzynierska
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
             app.UseCors(cors=> cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }
