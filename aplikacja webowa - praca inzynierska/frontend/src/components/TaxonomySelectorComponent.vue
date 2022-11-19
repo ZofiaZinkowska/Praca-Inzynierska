@@ -1,5 +1,5 @@
 <template>
-    <simple-type-ahead class="form-control" :items="items" :item-projection="projectItem" :min-input-length="3" @on-input="load($event.input)" @select-item="$emit('itemSelected', $event)"></simple-type-ahead>
+    <simple-type-ahead ref="input" type="search" class="form-control" :items="items" :item-projection="projectItem" :min-input-length="3" @on-input="load($event.input)" @select-item="$emit('itemSelected', $event)"></simple-type-ahead>
 </template>
 <script lang="ts">
 import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
@@ -20,21 +20,28 @@ export default defineComponent({
         }
     },
     methods: {
-        projectItem(item: SearchTaxonomyItem) {
+        projectItem(item?: SearchTaxonomyItem) {
+            if(!item)
+                return'';
             return `${item.scientificName} (${item.scientificNameAuthor})`;
+        },
+
+        selectItem(item?: SearchTaxonomyItem) {
+            this.items=[];
+            const input = this.$refs.input as simpleTypeAhead;
+            input.selectItem(item);
         },
 
         async load(keyword: string) {
             if (keyword.length === 0){
-                this.items=[];
-                this.$emit('itemSelected', undefined);
+                this.selectItem(undefined);
             }
             if (keyword.length < 3)
                 return;
             const params = {
                 keyword, count: 8
             };
-            var response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Search",{
+            const response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Search",{
                 params
             });
             this.items = response.data;
