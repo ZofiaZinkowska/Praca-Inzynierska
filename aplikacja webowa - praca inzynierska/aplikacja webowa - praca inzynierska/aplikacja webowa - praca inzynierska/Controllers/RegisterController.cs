@@ -23,23 +23,6 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
         private readonly ITaxonomyProvider _taxonomyProvider;
         private readonly IRegisterRepository _registerRepository;
 
-        [HttpPost("Save")]
-        public ActionResult<RegisterEntry> Save(int id, [FromBody]SaveRegisterEntryRequest saveRegisterEntryRequest)
-        {
-                var registerEntry = _registerRepository.FindById(id);
-                if (registerEntry == null)
-                    return NotFound();
-
-                registerEntry.TaxonomyID =saveRegisterEntryRequest.TaxonomyID;
-
-                registerEntry.ModificationDate = DateTime.UtcNow;
-
-                //Update RegisterEntry
-                _registerRepository.Update(registerEntry);
-
-                return registerEntry;
-        }
-
         [HttpGet("Get")]
 
         public ActionResult<RegisterEntry> Get(int id)
@@ -88,7 +71,6 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 {
                     AddDate = entry.AddDate,
                     Id = entry.Id,
-                    ModificationDate = entry.ModificationDate,
                 };
                 if (entry.TaxonomyID != null && taxonomyItems.TryGetValue(entry.TaxonomyID, out var taxonomyItem))
                 {
@@ -107,7 +89,6 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 var registerEntry = new RegisterEntry
                 {
                     AddDate=now,
-                    ModificationDate=now,
                     TaxonomyID=saveRegisterEntryRequest.TaxonomyID,
                 };
                 //Insert RegisterEntry 

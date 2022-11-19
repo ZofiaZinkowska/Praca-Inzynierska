@@ -13,7 +13,6 @@
                     <b-th>Id</b-th>
                     <b-th><sort-toggle-component sort-by="name" :value="sort" @toggled="onSort">Nazwa naukowa (Autor)</sort-toggle-component></b-th>
                     <b-th><sort-toggle-component sort-by="date" :value="sort" @toggled="onSort">Data dodania</sort-toggle-component></b-th>
-                    <b-th>Data edycji</b-th>
                     <b-th></b-th>
                 </b-tr>
             </b-thead>
@@ -22,9 +21,7 @@
                     <b-td>{{item.id}}</b-td>
                     <b-td>{{item.scientificName}} ({{item.scientificNameAuthor}})</b-td>
                     <b-td>{{item.addDate}}</b-td>
-                    <b-td>{{item.modificationDate}}</b-td>
                     <b-td class=" d-flex justify-content-end">
-                        <b-button  :to = "`/Edit/${item.id}`" class="me-2 btn-sm">Edytuj</b-button>
                         <b-button variant="danger" @click="remove(item)" class="btn-sm">Usuń</b-button>
                     </b-td>
                 </b-tr>
