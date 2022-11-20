@@ -11,8 +11,8 @@
                         placeholder="Wyszukaj pozycję w klasyfikacji..."></taxonomy-selector-component>
                 </b-form-group>
             </spinner-component>
-            <div class=" d-flex justify-content-end">
-                <span v-if="!!code && !!taxonomyItem">Kod zostanie powiązany z wybraną rośliną</span>
+            <div class=" d-flex justify-content-end align-items-center">
+                <b-form-text class="flex-grow-1" v-if="!!code && !!taxonomyItem">&#9432; Kod zostanie powiązany z wybraną rośliną</b-form-text>
                 <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj
                 </b-button>
                 <b-button :loading="isSaving" :disabled="isSaving || !isValid" @click="save()" variant="success">Zapisz
