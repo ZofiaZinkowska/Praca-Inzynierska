@@ -3,11 +3,11 @@
         <div class="mt-4">
             <b-form-group label="Zeskanuj kod rośliny">
                 <b-input-group>
-                    <b-form-input v-model="code" ref="codeInput" type="search" placeholder="Zeskanuj kod rośliny..."
-                        @search="find()"></b-form-input>
-                    <b-button variant="success" @click="find()"><font-awesome-icon icon="search"></font-awesome-icon></b-button>
+                    <b-form-input v-model="currentCode" ref="codeInput" type="search" placeholder="Zeskanuj kod rośliny..."
+                        @search="find(currentCode)"></b-form-input>
+                    <b-button variant="success" @click="find(currentCode)"><font-awesome-icon icon="search"></font-awesome-icon></b-button>
                 </b-input-group>
-                <span v-if="isCodeUnmapped" class="form-text text-warning">&#9432; Do wskazanego kodu nie znaleziono powiązanej rośliny</span>
+                <span v-if="isCodeUnmapped" class="form-text text-warning">&#9432; Do kodu '{{lastSearchedCode}}' nie znaleziono powiązanej rośliny</span>
             </b-form-group>
             <spinner-component :is-visible="isFinding">
                 <b-form-group label="Klasyfikacja roślin">
@@ -16,8 +16,7 @@
                 </b-form-group>
             </spinner-component>
             <div class=" d-flex justify-content-end align-items-center">
-                <b-form-text class="flex-grow-1" v-if="!!code && !!taxonomyItem">&#9432; Kod zostanie powiązany z
-                    wybraną rośliną</b-form-text>
+                <b-form-text class="flex-grow-1" v-if="!!lastSearchedCode && !!taxonomyItem">&#9432; {{saveInfoText}}</b-form-text>
                 <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj
                 </b-button>
                 <b-button :loading="isSaving" :disabled="isSaving || !isValid" @click="save()" variant="success">Zapisz
@@ -38,8 +37,9 @@ import type { SaveTaxonomyCodeRequest } from '@/contract/SaveTaxonomyCodeRequest
 import SpinnerComponent from '../components/SpinnerComponent.vue';
 
 interface Data { 
+    currentCode?: string;
     isFinding: boolean; 
-    code?: string; 
+    lastSearchedCode?: string; 
     taxonomyItem?: SearchTaxonomyItem; 
     alert?: Alert; 
     isSaving: boolean; 
@@ -49,8 +49,9 @@ interface Data {
 export default defineComponent({
     data(): Data {
         return { 
+            currentCode: undefined,
             isFinding: false, 
-            code: undefined, 
+            lastSearchedCode: undefined, 
             taxonomyItem: undefined, 
             alert: undefined, 
             isSaving: false,
@@ -66,8 +67,22 @@ export default defineComponent({
             return !!this.taxonomyItem;
         },
         isCodeUnmapped() {
-            return !this.lastFoundMatch && !!this.code;
-        }
+            return !this.lastFoundMatch && !!this.lastSearchedCode;
+        },
+        saveInfoText() {
+            if (!this.lastSearchedCode || !this.taxonomyItem){
+                return undefined;
+            }
+            if (!this.lastFoundMatch){
+                return `Kod '${this.lastSearchedCode}' zostanie powiązany z wybraną rośliną`;
+            }
+            if (this.taxonomyItem.taxonomyID !== this.lastFoundMatch.taxonomyID){
+                return `Istniejące powiązanie kodu '${this.lastSearchedCode}' zostanie połączone z nową rośliną`;
+            }
+            if (this.taxonomyItem.taxonomyID === this.lastFoundMatch.taxonomyID){
+                return `Kod '${this.lastSearchedCode}' jest już powiązany z wybraną rośliną`;
+            }
+        },
     },
     methods: {
         async save() {
@@ -76,8 +91,8 @@ export default defineComponent({
                 this.isSaving = true;
                 const request: SaveRegisterEntryRequest = { taxonomyID: this.taxonomyItem!.taxonomyID };
                 await axios.put("https://localhost:5001/Register/Add", request);
-                if (!!this.code) {
-                    const codeRequest: SaveTaxonomyCodeRequest = { taxonomyID: this.taxonomyItem!.taxonomyID, code: this.code };
+                if (!!this.lastSearchedCode) {
+                    const codeRequest: SaveTaxonomyCodeRequest = { taxonomyID: this.taxonomyItem!.taxonomyID, code: this.lastSearchedCode };
                     await axios.put("https://localhost:5001/Taxonomy/AddCode", codeRequest);
                 }
                 this.$router.push({ name: "List" });
@@ -90,14 +105,15 @@ export default defineComponent({
             }
         },
 
-        async find() {
-            if (!this.code)
+        async find(code?: string) {
+            this.lastSearchedCode = code;
+            if (!code)
                 return;
             try {
                 this.alert = undefined;
                 this.isFinding = true;
                 this.lastFoundMatch = undefined;
-                const response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Find", { params: { code: this.code } });
+                const response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Find", { params: { code } });
                 const items = response.data;
                 const input = this.$refs.taxonomyInput as any;
                 if (items.length === 0) {
