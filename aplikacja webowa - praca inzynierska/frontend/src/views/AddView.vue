@@ -16,7 +16,7 @@
                 </b-form-group>
             </spinner-component>
             <div class=" d-flex justify-content-end align-items-center">
-                <b-form-text class="flex-grow-1" v-if="!!lastSearchedCode && !!taxonomyItem">&#9432; {{saveInfoText}}</b-form-text>
+                <b-form-text class="flex-grow-1" v-if="!!saveInfoText">&#9432; {{saveInfoText}}</b-form-text>
                 <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj
                 </b-button>
                 <b-button :loading="isSaving" :disabled="isSaving || !isValid" @click="save()" variant="success">Zapisz
