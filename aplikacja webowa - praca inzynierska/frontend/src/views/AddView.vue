@@ -2,8 +2,12 @@
     <page-component title="Dodawanie nowego wpisu" :alert="alert">
         <div class="mt-4">
             <b-form-group label="Zeskanuj kod rośliny">
-                <b-form-input v-model="code" ref="codeInput" type="search" placeholder="Zeskanuj kod rośliny..."
-                    @search="find()"></b-form-input>
+                <b-input-group>
+                    <b-form-input v-model="code" ref="codeInput" type="search" placeholder="Zeskanuj kod rośliny..."
+                        @search="find()"></b-form-input>
+                    <b-button variant="success" @click="find()"><font-awesome-icon icon="search"></font-awesome-icon></b-button>
+                </b-input-group>
+                <span v-if="isCodeUnmapped" class="form-text text-warning">&#9432; Do wskazanego kodu nie znaleziono powiązanej rośliny</span>
             </b-form-group>
             <spinner-component :is-visible="isFinding">
                 <b-form-group label="Klasyfikacja roślin">
@@ -12,7 +16,8 @@
                 </b-form-group>
             </spinner-component>
             <div class=" d-flex justify-content-end align-items-center">
-                <b-form-text class="flex-grow-1" v-if="!!code && !!taxonomyItem">&#9432; Kod zostanie powiązany z wybraną rośliną</b-form-text>
+                <b-form-text class="flex-grow-1" v-if="!!code && !!taxonomyItem">&#9432; Kod zostanie powiązany z
+                    wybraną rośliną</b-form-text>
                 <b-button :disabled="isSaving" @click="$router.back()" variant="secondary" class="me-2">Anuluj
                 </b-button>
                 <b-button :loading="isSaving" :disabled="isSaving || !isValid" @click="save()" variant="success">Zapisz
@@ -32,11 +37,25 @@ import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
 import type { SaveTaxonomyCodeRequest } from '@/contract/SaveTaxonomyCodeRequest';
 import SpinnerComponent from '../components/SpinnerComponent.vue';
 
-interface Data { isFinding: boolean; code?: string; taxonomyItem?: SearchTaxonomyItem; alert?: Alert; isSaving: boolean; }
+interface Data { 
+    isFinding: boolean; 
+    code?: string; 
+    taxonomyItem?: SearchTaxonomyItem; 
+    alert?: Alert; 
+    isSaving: boolean; 
+    lastFoundMatch?: SearchTaxonomyItem;
+}
 
 export default defineComponent({
     data(): Data {
-        return { isFinding: false, code: undefined, taxonomyItem: undefined, alert: undefined, isSaving: false };
+        return { 
+            isFinding: false, 
+            code: undefined, 
+            taxonomyItem: undefined, 
+            alert: undefined, 
+            isSaving: false,
+            lastFoundMatch: undefined, 
+        };
     },
     mounted() {
         const input = this.$refs.codeInput as HTMLInputElement;
@@ -45,6 +64,9 @@ export default defineComponent({
     computed: {
         isValid() {
             return !!this.taxonomyItem;
+        },
+        isCodeUnmapped() {
+            return !this.lastFoundMatch && !!this.code;
         }
     },
     methods: {
@@ -74,13 +96,16 @@ export default defineComponent({
             try {
                 this.alert = undefined;
                 this.isFinding = true;
+                this.lastFoundMatch = undefined;
                 const response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Find", { params: { code: this.code } });
                 const items = response.data;
+                const input = this.$refs.taxonomyInput as any;
                 if (items.length === 0) {
+                    input.selectItem(undefined);
                     return;
                 }
-                const input = this.$refs.taxonomyInput as any;
                 input.selectItem(items[0]);
+                this.lastFoundMatch = items[0];
             }
             catch {
                 this.alert = { type: "danger", text: "Wystąpił błąd" };
