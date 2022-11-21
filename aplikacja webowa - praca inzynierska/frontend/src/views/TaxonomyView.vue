@@ -25,7 +25,10 @@
             </div>
         </template>
         <div v-if="!isBusy && !!details" class="mt-4 border-top pt-4">
-            <h5>{{ details.scientificName }}</h5>
+            <div class="d-flex align-items-center">
+                <h5 class="mb-0 text-primary">{{ details.scientificName }}</h5>
+                <b-button variant="success" class="ms-auto">Drukuj etykietę</b-button>
+            </div>
             <div class="d-flex align-items-start mt-2">
                 <b-table-simple class="w-auto details-table">
                     <b-tr>
