@@ -25,43 +25,45 @@
             </div>
         </template>
         <div v-if="!isBusy && !!details" class="mt-4 border-top pt-4">
-            <div class="d-flex align-items-center">
-                <h5 class="mb-0 text-primary">{{ details.scientificName }}</h5>
-                <b-button variant="success" class="ms-auto">Drukuj etykietę</b-button>
-            </div>
-            <div class="d-flex align-items-start mt-2">
-                <b-table-simple class="w-auto details-table">
-                    <b-tr>
-                        <b-th>Autor:</b-th>
-                        <b-td>{{ details.scientificNameAuthor }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                        <b-th>Opublikowano w:</b-th>
-                        <b-td>{{ details.namePublishedIn }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                        <b-th>Status:</b-th>
-                        <b-td>{{ details.taxonomicStatus }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                        <b-th>Rodzina:</b-th>
-                        <b-td>{{ details.family }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                        <b-th>Podrodzina:</b-th>
-                        <b-td>{{ details.subfamily }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                        <b-th>Gatunek:</b-th>
-                        <b-td>{{ details.genus }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                        <b-th>Epitet gatunkowy:</b-th>
-                        <b-td>{{ details.specificEpithet }}</b-td>
-                    </b-tr>
-                </b-table-simple>
-                <div class="ms-auto mt-auto mb-auto">
-                    <qrcode-vue :value="details.id" level="H" :size="200"></qrcode-vue>
+            <div id="print-label">
+                <div class="d-flex align-items-center">
+                    <h5 class="mb-0 text-primary">{{ details.scientificName }}</h5>
+                    <b-button v-print="'#print-label'" variant="success" class="ms-auto print-button">Drukuj etykietę</b-button>
+                </div>
+                <div class="d-flex align-items-start mt-2">
+                    <b-table-simple class="w-auto details-table">
+                        <b-tr>
+                            <b-th>Autor:</b-th>
+                            <b-td>{{ details.scientificNameAuthor }}</b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th>Opublikowano w:</b-th>
+                            <b-td>{{ details.namePublishedIn }}</b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th>Status:</b-th>
+                            <b-td>{{ details.taxonomicStatus }}</b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th>Rodzina:</b-th>
+                            <b-td>{{ details.family }}</b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th>Podrodzina:</b-th>
+                            <b-td>{{ details.subfamily }}</b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th>Gatunek:</b-th>
+                            <b-td>{{ details.genus }}</b-td>
+                        </b-tr>
+                        <b-tr>
+                            <b-th>Epitet gatunkowy:</b-th>
+                            <b-td>{{ details.specificEpithet }}</b-td>
+                        </b-tr>
+                    </b-table-simple>
+                    <div class="ms-auto mt-auto mb-auto">
+                        <qrcode-vue :value="details.id" level="H" :size="200"></qrcode-vue>
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,6 +73,20 @@
 .details-table th,
 .details-table td {
     padding: 6px;
+}
+@media print{
+    .print-button{
+        display: none;
+    }
+    #print-label{
+        height: 40mm;
+        width: 80mm;
+        margin: 1mm;
+        overflow: hidden;
+    }
+    #print-label >*{
+        zoom: 30%;
+    }   
 }
 </style>
 <script lang="ts">
@@ -82,6 +98,8 @@ import axios from 'axios';
 import type { SearchTaxonomyItem } from '../contract/SearchTaxonomyItem';
 import SpinnerComponent from '../components/SpinnerComponent.vue';
 import QrcodeVue from 'qrcode.vue';
+//@ts-ignore
+import print from 'vue3-print-nb';
 
 interface Data {
     isBusy: boolean;
@@ -147,7 +165,8 @@ export default defineComponent({
             }
         }
     },
-    components: { PageComponent, TaxonomySelectorComponent, SpinnerComponent, QrcodeVue }
+    components: { PageComponent, TaxonomySelectorComponent, SpinnerComponent, QrcodeVue },
+    directives: { print }
 });
 </script>
  
