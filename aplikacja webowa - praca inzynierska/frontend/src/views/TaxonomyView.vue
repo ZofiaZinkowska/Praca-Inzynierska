@@ -10,7 +10,8 @@
                             <font-awesome-icon icon="search"></font-awesome-icon>
                         </b-button>
                     </b-input-group>
-                    <span v-if="isCodeUnmapped" class="form-text text-warning">&#9432; Do kodu '{{lastSearchedCode}}' nie znaleziono powiązanej rośliny</span>
+                    <span v-if="isCodeUnmapped" class="form-text text-warning">&#9432; Do kodu '{{ lastSearchedCode }}'
+                        nie znaleziono powiązanej rośliny</span>
                 </b-form-group>
                 <spinner-component :is-visible="isFinding">
                     <b-form-group label="Wyszukaj roślinę w klasyfikacji">
@@ -25,36 +26,41 @@
         </template>
         <div v-if="!isBusy && !!details" class="mt-4 border-top pt-4">
             <h5>{{ details.scientificName }}</h5>
-            <b-table-simple class="w-auto details-table">
-                <b-tr>
-                    <b-th>Autor:</b-th>
-                    <b-td>{{ details.scientificNameAuthor }}</b-td>
-                </b-tr>
-                <b-tr>
-                    <b-th>Opublikowano w:</b-th>
-                    <b-td>{{ details.namePublishedIn }}</b-td>
-                </b-tr>
-                <b-tr>
-                    <b-th>Status:</b-th>
-                    <b-td>{{ details.taxonomicStatus }}</b-td>
-                </b-tr>
-                <b-tr>
-                    <b-th>Rodzina:</b-th>
-                    <b-td>{{ details.family }}</b-td>
-                </b-tr>
-                <b-tr>
-                    <b-th>Podrodzina:</b-th>
-                    <b-td>{{ details.subfamily }}</b-td>
-                </b-tr>
-                <b-tr>
-                    <b-th>Gatunek:</b-th>
-                    <b-td>{{ details.genus }}</b-td>
-                </b-tr>
-                <b-tr>
-                    <b-th>Epitet gatunkowy:</b-th>
-                    <b-td>{{ details.specificEpithet }}</b-td>
-                </b-tr>
-            </b-table-simple>
+            <div class="d-flex align-items-start mt-2">
+                <b-table-simple class="w-auto details-table">
+                    <b-tr>
+                        <b-th>Autor:</b-th>
+                        <b-td>{{ details.scientificNameAuthor }}</b-td>
+                    </b-tr>
+                    <b-tr>
+                        <b-th>Opublikowano w:</b-th>
+                        <b-td>{{ details.namePublishedIn }}</b-td>
+                    </b-tr>
+                    <b-tr>
+                        <b-th>Status:</b-th>
+                        <b-td>{{ details.taxonomicStatus }}</b-td>
+                    </b-tr>
+                    <b-tr>
+                        <b-th>Rodzina:</b-th>
+                        <b-td>{{ details.family }}</b-td>
+                    </b-tr>
+                    <b-tr>
+                        <b-th>Podrodzina:</b-th>
+                        <b-td>{{ details.subfamily }}</b-td>
+                    </b-tr>
+                    <b-tr>
+                        <b-th>Gatunek:</b-th>
+                        <b-td>{{ details.genus }}</b-td>
+                    </b-tr>
+                    <b-tr>
+                        <b-th>Epitet gatunkowy:</b-th>
+                        <b-td>{{ details.specificEpithet }}</b-td>
+                    </b-tr>
+                </b-table-simple>
+                <div class="ms-auto mt-auto mb-auto">
+                    <qrcode-vue :value="details.id" level="H" :size="200"></qrcode-vue>
+                </div>
+            </div>
         </div>
     </page-component>
 </template>
@@ -70,27 +76,28 @@ import { defineComponent } from 'vue';
 import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 import type { TaxonomyItemDetails } from '../contract/TaxonomyItemDetails';
 import axios from 'axios';
-import type {SearchTaxonomyItem} from '../contract/SearchTaxonomyItem';
-import SpinnerComponent from '../components/SpinnerComponent.vue'
+import type { SearchTaxonomyItem } from '../contract/SearchTaxonomyItem';
+import SpinnerComponent from '../components/SpinnerComponent.vue';
+import QrcodeVue from 'qrcode.vue';
 
-interface Data { 
-    isBusy: boolean; 
+interface Data {
+    isBusy: boolean;
     details?: TaxonomyItemDetails;
     currentCode?: string;
-    isFinding: boolean;  
+    isFinding: boolean;
     lastSearchedCode?: string;
     lastFoundMatch?: SearchTaxonomyItem;
 }
 
 export default defineComponent({
     data(): Data {
-        return { 
-            isBusy: false, 
+        return {
+            isBusy: false,
             details: undefined,
             currentCode: undefined,
             isFinding: false,
-            lastSearchedCode: undefined, 
-            lastFoundMatch: undefined, 
+            lastSearchedCode: undefined,
+            lastFoundMatch: undefined,
         };
     },
     computed: {
@@ -137,7 +144,7 @@ export default defineComponent({
             }
         }
     },
-    components: { PageComponent, TaxonomySelectorComponent, SpinnerComponent }
+    components: { PageComponent, TaxonomySelectorComponent, SpinnerComponent, QrcodeVue }
 });
 </script>
  
