@@ -21,6 +21,11 @@ namespace aplikacja_webowa___praca_inzynierska.Services
 
         public IEnumerable<TaxonomyItem> Find(string code)
         {
+            var directMatches = GetTaxonomy().Where(x => x.TaxonomyID == code);
+            if (directMatches.Any())
+            {
+                return directMatches;
+            }
             var taxonomyCode = _codes.FindById(code);
             if (taxonomyCode == null)
             {

@@ -62,7 +62,7 @@
                         </b-tr>
                     </b-table-simple>
                     <div class="ms-auto mt-auto mb-auto">
-                        <qrcode-vue :value="details.id" level="H" :size="200"></qrcode-vue>
+                        <qrcode-vue :value="details.id" level="L" :size="200"></qrcode-vue>
                     </div>
                 </div>
             </div>
