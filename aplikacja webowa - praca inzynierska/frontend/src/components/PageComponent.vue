@@ -9,21 +9,25 @@
             </div>
         </div>
         <slot name="before-spinner" :disabled="isBusy"></slot>
-        <div class="d-flex justify-content-center mt-5 mb-3" v-if="isBusy">
-            <b-spinner></b-spinner>
-        </div>
-        <slot v-else />
+        <spinner-component :is-visible="isBusy">
+            <slot/>
+        </spinner-component>
     </b-container>
 </template>
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue';
 import type { Alert } from './Alert';
+import SpinnerComponent from './SpinnerComponent.vue';
 
 export default defineComponent({
     props: {
         alert: Object as PropType<Alert>,
         title: String,
         isBusy: Boolean
-    }
+    },
+    component: {
+        SpinnerComponent
+    },
+    components: { SpinnerComponent }
 });
 </script>

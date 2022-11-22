@@ -28,9 +28,11 @@
                 <b-tr v-for="item in items">
                     <b-td>{{ item.id }}</b-td>
                     <b-td>{{ item.scientificName }} ({{ item.scientificNameAuthor }})</b-td>
-                    <b-td :title="formatDateTime(item.addDate)">{{ formatDate(item.addDate) }}</b-td>
-                    <b-td class="d-flex justify-content-end hide-in-print">
-                        <b-button variant="danger" @click="remove(item)" class="btn-sm">Usuń</b-button>
+                    <b-td :title="formatDateTime(item.addDate)">{{ formatDate(item.addDate) }}</b-td>   
+                    <b-td class="hide-in-print">
+                        <div class="d-flex justify-content-end">
+                            <b-button variant="danger" @click="remove(item)" class="btn-sm">Usuń</b-button>
+                        </div>
                     </b-td>
                 </b-tr>
             </b-tbody>
