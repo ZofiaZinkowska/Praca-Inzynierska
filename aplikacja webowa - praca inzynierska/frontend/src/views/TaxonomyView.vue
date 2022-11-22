@@ -91,7 +91,7 @@
 </style>
 <script lang="ts">
 import PageComponent from "../components/PageComponent.vue";
-import { defineComponent } from 'vue';
+import { defineComponent, type Directive } from 'vue';
 import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 import type { TaxonomyItemDetails } from '../contract/TaxonomyItemDetails';
 import axios from 'axios';
@@ -166,7 +166,7 @@ export default defineComponent({
         }
     },
     components: { PageComponent, TaxonomySelectorComponent, SpinnerComponent, QrcodeVue },
-    directives: { print }
+    directives: { print: print as Directive }
 });
 </script>
  
