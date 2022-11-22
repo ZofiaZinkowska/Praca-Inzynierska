@@ -16,7 +16,7 @@
                 <spinner-component :is-visible="isFinding">
                     <b-form-group label="Wyszukaj roślinę w klasyfikacji">
                         <b-input-group class="me-2">
-                            <taxonomy-selector-component ref="taxonomyInput" @item-selected="load($event?.taxonomyID)"
+                            <taxonomy-selector-component ref="taxonomyInput" @item-selected="load($event)"
                                 placeholder="Wyszukaj w klasyfikacji...">
                             </taxonomy-selector-component>
                         </b-input-group>
@@ -28,7 +28,8 @@
             <div id="print-label">
                 <div class="d-flex align-items-center">
                     <h5 class="mb-0 text-primary">{{ details.scientificName }}</h5>
-                    <b-button v-print="'#print-label'" variant="success" class="ms-auto print-button">Drukuj etykietę</b-button>
+                    <b-button v-print="'#print-label'" variant="success" class="ms-auto print-button">Drukuj etykietę
+                    </b-button>
                 </div>
                 <div class="d-flex align-items-start mt-2">
                     <b-table-simple class="w-auto details-table">
@@ -74,19 +75,22 @@
 .details-table td {
     padding: 6px;
 }
-@media print{
-    .print-button{
+
+@media print {
+    .print-button {
         display: none;
     }
-    #print-label{
+
+    #print-label {
         height: 40mm;
         width: 80mm;
         margin: 1mm;
         overflow: hidden;
     }
-    #print-label >*{
+
+    #print-label>* {
         zoom: 30%;
-    }   
+    }
 }
 </style>
 <script lang="ts">
@@ -110,6 +114,10 @@ interface Data {
     lastFoundMatch?: SearchTaxonomyItem;
 }
 
+interface MatchedSearchTaxonomyItem extends SearchTaxonomyItem {
+    matchedCode?: string;
+}
+
 export default defineComponent({
     data(): Data {
         return {
@@ -127,7 +135,11 @@ export default defineComponent({
         },
     },
     methods: {
-        async load(id?: string) {
+        async load(item?: MatchedSearchTaxonomyItem) {
+            if (item?.matchedCode !== this.currentCode) {
+                this.currentCode = undefined;
+            }
+            const id = item?.taxonomyID;
             if (!id) {
                 this.details = undefined;
                 return;
@@ -157,8 +169,10 @@ export default defineComponent({
                     input.selectItem(undefined);
                     return;
                 }
-                input.selectItem(items[0]);
-                this.lastFoundMatch = items[0];
+                const matchedItem: MatchedSearchTaxonomyItem = items[0];
+                matchedItem.matchedCode = code;
+                input.selectItem(matchedItem);
+                this.lastFoundMatch = matchedItem;
             }
             finally {
                 this.isFinding = false;
