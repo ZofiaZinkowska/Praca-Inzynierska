@@ -1,14 +1,15 @@
 <template>
     <page-component title="Wykaz roślin" :is-busy="isBusy" :alert="alert">
+        <template #actions>
+            <b-button variant="success" v-print="'#print-list'">Drukuj listę</b-button>
+        </template>
         <template #before-spinner>
             <div class="d-flex justify-content-end">
-                <b-input-group class="me-2">
-                    <taxonomy-selector-component @item-selected="load($event?.taxonomyID)"
-                        placeholder="Wyszukaj w ewidencji..."></taxonomy-selector-component>
-                </b-input-group>
+                <taxonomy-selector-component @item-selected="load($event?.taxonomyID)"
+                    placeholder="Wyszukaj w ewidencji..."></taxonomy-selector-component>
             </div>
         </template>
-        <b-table-simple>
+        <b-table-simple id="print-list">
             <b-thead>
                 <b-tr>
                     <b-th>Id</b-th>
@@ -20,7 +21,7 @@
                         <sort-toggle-component sort-by="date" :value="sort" @toggled="onSort">Data dodania
                         </sort-toggle-component>
                     </b-th>
-                    <b-th></b-th>
+                    <b-th class="hide-in-print"></b-th>
                 </b-tr>
             </b-thead>
             <b-tbody>
@@ -28,7 +29,7 @@
                     <b-td>{{ item.id }}</b-td>
                     <b-td>{{ item.scientificName }} ({{ item.scientificNameAuthor }})</b-td>
                     <b-td :title="formatDateTime(item.addDate)">{{ formatDate(item.addDate) }}</b-td>
-                    <b-td class=" d-flex justify-content-end">
+                    <b-td class="d-flex justify-content-end hide-in-print">
                         <b-button variant="danger" @click="remove(item)" class="btn-sm">Usuń</b-button>
                     </b-td>
                 </b-tr>
@@ -36,11 +37,18 @@
         </b-table-simple>
     </page-component>
 </template>
+<style scoped>
+@media print {
+    .hide-in-print {
+        display: none !important;
+    }
+}
+</style>
 <script lang="ts">
 
 import type { ListRegisterEntriesItem } from '../contract/ListRegisterEntriesItem';
 import axios from 'axios';
-import { defineComponent } from 'vue';
+import { defineComponent, type Directive } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
 import type { Alert } from '@/components/Alert';
 import { remove } from '@vue/shared';
@@ -48,6 +56,8 @@ import SortToggleComponent from '../components/SortToggleComponent.vue';
 import type { SortDescription } from '@/components/SortDescription';
 import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 import moment from 'moment';
+//@ts-ignore
+import print from 'vue3-print-nb';
 
 interface Data {
     items: ListRegisterEntriesItem[]; alert?: Alert; isBusy: boolean;
@@ -62,7 +72,7 @@ export default defineComponent({
         formatDate(date: string) {
             return moment(date).format('DD.MM.yyyy');
         },
-        formatDateTime(dateTime: string){
+        formatDateTime(dateTime: string) {
             return moment(dateTime).format('DD.MM.yyyy HH:mm:ss')
         },
         async load(keyword?: string) {
@@ -104,7 +114,8 @@ export default defineComponent({
     async mounted() {
         await this.load();
     },
-    components: { PageComponent, SortToggleComponent, TaxonomySelectorComponent }
+    components: { PageComponent, SortToggleComponent, TaxonomySelectorComponent },
+    directives: { print: print as Directive }
 });
 
 </script>

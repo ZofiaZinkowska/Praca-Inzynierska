@@ -1,17 +1,23 @@
 <template>
-        <b-alert class="my-3 shadow-sm" :variant="alert?.type" dismissible="true" :show="!!alert">{{alert?.text}}</b-alert>
+    <b-alert class="my-3 shadow-sm" :variant="alert?.type" dismissible="true" :show="!!alert">{{ alert?.text }}
+    </b-alert>
     <b-container class="shadow-sm rounded my-3 p-4 bg-body">
-        <h4 class="border-bottom pb-2">{{title}}</h4>
+        <div class="d-flex align-items-center mb-2 border-bottom pb-2">
+            <h4 class="mb-0">{{ title }}</h4>
+            <div class="ms-auto">
+                <slot name="actions"></slot>
+            </div>
+        </div>
         <slot name="before-spinner" :disabled="isBusy"></slot>
         <div class="d-flex justify-content-center mt-5 mb-3" v-if="isBusy">
             <b-spinner></b-spinner>
         </div>
-        <slot v-else/>
+        <slot v-else />
     </b-container>
 </template>
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue';
-import type {Alert} from './Alert';
+import type { Alert } from './Alert';
 
 export default defineComponent({
     props: {

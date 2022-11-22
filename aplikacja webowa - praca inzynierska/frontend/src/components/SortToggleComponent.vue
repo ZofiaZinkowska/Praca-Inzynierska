@@ -1,3 +1,23 @@
+<template>
+    <span @click="toggle()" class="component user-select-none">
+        <slot></slot>
+        <span class="ms-2 hide-in-print">
+            <font-awesome-icon :icon="icon" :class="{'icon':true, 'always-visible':isAlwaysVisible}"></font-awesome-icon>
+        </span>
+    </span>
+</template>
+<style scoped>
+.component:hover{cursor: pointer;}
+.icon{opacity: 0;}
+.component:hover .icon:not(.always-visible){opacity: 0.25;}
+.icon.always-visible{opacity: 1;}
+
+@media print {
+    .hide-in-print {
+        display: none !important;
+    }
+}
+</style>
 <script lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { defineComponent, type PropType } from 'vue';
@@ -47,17 +67,3 @@ export default defineComponent({
     }
 });
 </script>
-<style scoped>
-.component:hover{cursor: pointer;}
-.icon{opacity: 0;}
-.component:hover .icon:not(.always-visible){opacity: 0.25;}
-.icon.always-visible{opacity: 1;}
-</style>
-<template>
-    <span @click="toggle()" class="component user-select-none">
-        <slot></slot>
-        <span class="ms-2">
-            <font-awesome-icon :icon="icon" :class="{'icon':true, 'always-visible':isAlwaysVisible}"></font-awesome-icon>
-        </span>
-    </span>
-</template>
