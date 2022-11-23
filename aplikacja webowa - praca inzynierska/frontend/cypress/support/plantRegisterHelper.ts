@@ -6,15 +6,22 @@ class PlantRegisterHelper {
         cy.get('.container .mb-0').should('have.text', pageTitle);
     }
 
+    searchID(){
+        cy.get('.input-group').within(() => {
+            cy.get('.form-control').type('123456').should('have.value','')
+        })
+        cy.get('.btn-content .svg-inline--fa').click();
+    }
+
     searchIDByKeyword(){
         cy.get('.input-group')
-        .type('123456').should('have.value','')
+        .type('1234567').should('have.value','')
         cy.get('.btn-content .svg-inline--fa').click();
     }
 
     searchPlantByKeyword(){
         cy.get('.simple-typeahead-input')
-        .type('×Algastoloba (D.M.Cumming)').should('have.value','×Algastoloba (D.M.Cumming)').click();
+        .type('Abutilon circinatum ((Willd. ex Spreng.) G.Don)').should('have.value','Abutilon circinatum ((Willd. ex Spreng.) G.Don)').click();
         cy.contains('.btn-content', 'Zapisz').click();
     }
 }
