@@ -1,8 +1,8 @@
 /// <reference types = 'cypress' />
 
-import { planRegisterHelper } from "../support/plantRegisterHelper"
+import { plantRegisterHelper } from "../support/plantRegisterHelper";
 
-const plantRegister = ''
+const plantRegister = 'http://127.0.0.1:5173/';
 
 describe('The „plant register” application', () => {
     before(() => {
@@ -10,6 +10,6 @@ describe('The „plant register” application', () => {
     })
 
     it('should contain proper page title', () => {
-        planRegisterHelper.verifyPageTitle('Ewidencja roślin botanicznych');
-    })
+        plantRegisterHelper.verifyPageTitle('Ewidencja roślin botanicznych');
+    });
 })
