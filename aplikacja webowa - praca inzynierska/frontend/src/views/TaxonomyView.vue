@@ -104,6 +104,7 @@ import SpinnerComponent from '../components/SpinnerComponent.vue';
 import QrcodeVue from 'qrcode.vue';
 //@ts-ignore
 import print from 'vue3-print-nb';
+import { useRoute } from "vue-router";
 
 interface Data {
     isBusy: boolean;
@@ -134,11 +135,22 @@ export default defineComponent({
             return !this.lastFoundMatch && !!this.lastSearchedCode;
         },
     },
+    mounted() {
+        const route = useRoute();
+        const id = route.params.id as string;
+        if (!!id){
+            this.find(id);
+        } else {
+            const input = this.$refs.codeInput as HTMLInputElement;
+            input.focus();
+        }
+    },
     methods: {
         async load(item?: MatchedSearchTaxonomyItem) {
             if (item?.matchedCode !== this.currentCode) {
                 this.currentCode = undefined;
             }
+            this.$router.replace({name:'Taxonomy', params:{id: this.currentCode}});
             const id = item?.taxonomyID;
             if (!id) {
                 this.details = undefined;
@@ -157,6 +169,7 @@ export default defineComponent({
         },
         async find(code?: string) {
             this.lastSearchedCode = code;
+            this.$router.replace({name:'Taxonomy', params:{id: code}});
             if (!code)
                 return;
             try {

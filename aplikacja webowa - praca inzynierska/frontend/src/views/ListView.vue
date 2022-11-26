@@ -28,17 +28,20 @@
                 <b-tr v-for="item in items">
                     <b-td>{{ item.id }}</b-td>
                     <b-td>{{ item.scientificName }} ({{ item.scientificNameAuthor }})</b-td>
-                    <b-td :title="formatDateTime(item.addDate)">{{ formatDate(item.addDate) }}</b-td>   
+                    <b-td :title="formatDateTime(item.addDate)">{{ formatDate(item.addDate) }}</b-td>
                     <b-td class="hide-in-print">
                         <div class="d-flex justify-content-end gap-1">
-                            <b-button variant="success" v-if="!!item.taxonomyID" title="Pokaż klasyfikację" class="btn-sm hover-icon">
-                                <font-awesome-icon icon="folder-tree"/>
+                            <b-button @click="$router.push({ name:'Taxonomy', params: { id: item.taxonomyID } })"
+                                variant="success" v-if="!!item.taxonomyID" title="Pokaż klasyfikację"
+                                class="btn-sm hover-icon">
+                                <font-awesome-icon icon="folder-tree" />
                             </b-button>
-                            <b-button @click="filter(item.taxonomyID!)" variant="success" v-if="!!item.taxonomyID" title="Filtruj według klasyfikacji" class="btn-sm hover-icon">
-                                <font-awesome-icon icon="filter"/>
+                            <b-button @click="filter(item.taxonomyID!)" variant="success" v-if="!!item.taxonomyID"
+                                title="Filtruj według klasyfikacji" class="btn-sm hover-icon">
+                                <font-awesome-icon icon="filter" />
                             </b-button>
                             <b-button variant="danger" @click="remove(item)" class="btn-sm hover-icon" title="Usuń">
-                                <font-awesome-icon icon="xmark"/>
+                                <font-awesome-icon icon="xmark" />
                             </b-button>
                         </div>
                     </b-td>
@@ -53,12 +56,14 @@
         display: none !important;
     }
 }
-.hover-icon{
+
+.hover-icon {
     width: 31px;
     text-align: center;
     opacity: 0;
 }
-tr:hover .hover-icon{
+
+tr:hover .hover-icon {
     opacity: initial;
 }
 </style>
@@ -93,9 +98,9 @@ export default defineComponent({
             try {
                 this.isBusy = true;
                 const response = await axios.get<TaxonomyItemDetails>("https://localhost:5001/Taxonomy/Details", {
-                    params: {id: taxonomyID}
+                    params: { id: taxonomyID }
                 });
-                if (!!response.data){
+                if (!!response.data) {
                     const taxonomyInput = this.$refs.taxonomyInput as any;
                     const item: SearchTaxonomyItem = {
                         scientificName: response.data.scientificName,
@@ -107,7 +112,7 @@ export default defineComponent({
                 else {
                     this.isBusy = false;
                 }
-            } 
+            }
             catch {
                 this.isBusy = false;
             }

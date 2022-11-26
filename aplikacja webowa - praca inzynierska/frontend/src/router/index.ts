@@ -18,7 +18,7 @@ const router = createRouter({
       component: ListView
     },
     {
-      path: '/Taxonomy',
+      path: '/Taxonomy/:id?',
       name: 'Taxonomy',
       component: TaxonomyView
     },
