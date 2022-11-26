@@ -71,6 +71,7 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 {
                     AddDate = entry.AddDate,
                     Id = entry.Id,
+                    TaxonomyID = entry.TaxonomyID
                 };
                 if (entry.TaxonomyID != null && taxonomyItems.TryGetValue(entry.TaxonomyID, out var taxonomyItem))
                 {

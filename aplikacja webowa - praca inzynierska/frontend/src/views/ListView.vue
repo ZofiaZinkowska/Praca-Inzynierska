@@ -6,10 +6,10 @@
         <template #before-spinner>
             <div class="d-flex justify-content-end">
                 <taxonomy-selector-component @item-selected="load($event?.taxonomyID)"
-                    placeholder="Wyszukaj w ewidencji..."></taxonomy-selector-component>
+                    placeholder="Wyszukaj w ewidencji..." ref="taxonomyInput"></taxonomy-selector-component>
             </div>
         </template>
-        <b-table-simple id="print-list">
+        <b-table-simple id="print-list" class="table-hover">
             <b-thead>
                 <b-tr>
                     <b-th>Id</b-th>
@@ -30,8 +30,16 @@
                     <b-td>{{ item.scientificName }} ({{ item.scientificNameAuthor }})</b-td>
                     <b-td :title="formatDateTime(item.addDate)">{{ formatDate(item.addDate) }}</b-td>   
                     <b-td class="hide-in-print">
-                        <div class="d-flex justify-content-end">
-                            <b-button variant="danger" @click="remove(item)" class="btn-sm">Usuń</b-button>
+                        <div class="d-flex justify-content-end gap-1">
+                            <b-button variant="success" v-if="!!item.taxonomyID" title="Pokaż klasyfikację" class="btn-sm hover-icon">
+                                <font-awesome-icon icon="folder-tree"/>
+                            </b-button>
+                            <b-button @click="filter(item.taxonomyID!)" variant="success" v-if="!!item.taxonomyID" title="Filtruj według klasyfikacji" class="btn-sm hover-icon">
+                                <font-awesome-icon icon="filter"/>
+                            </b-button>
+                            <b-button variant="danger" @click="remove(item)" class="btn-sm hover-icon" title="Usuń">
+                                <font-awesome-icon icon="xmark"/>
+                            </b-button>
                         </div>
                     </b-td>
                 </b-tr>
@@ -44,6 +52,14 @@
     .hide-in-print {
         display: none !important;
     }
+}
+.hover-icon{
+    width: 31px;
+    text-align: center;
+    opacity: 0;
+}
+tr:hover .hover-icon{
+    opacity: initial;
 }
 </style>
 <script lang="ts">
@@ -60,6 +76,8 @@ import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.v
 import moment from 'moment';
 //@ts-ignore
 import print from 'vue3-print-nb';
+import type { TaxonomyItemDetails } from '@/contract/TaxonomyItemDetails';
+import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
 
 interface Data {
     items: ListRegisterEntriesItem[]; alert?: Alert; isBusy: boolean;
@@ -71,6 +89,29 @@ export default defineComponent({
         return { items: [], alert: undefined, isBusy: false, sort: undefined };
     },
     methods: {
+        async filter(taxonomyID: string) {
+            try {
+                this.isBusy = true;
+                const response = await axios.get<TaxonomyItemDetails>("https://localhost:5001/Taxonomy/Details", {
+                    params: {id: taxonomyID}
+                });
+                if (!!response.data){
+                    const taxonomyInput = this.$refs.taxonomyInput as any;
+                    const item: SearchTaxonomyItem = {
+                        scientificName: response.data.scientificName,
+                        scientificNameAuthor: response.data.scientificNameAuthor,
+                        taxonomyID,
+                    };
+                    taxonomyInput.selectItem(item);
+                }
+                else {
+                    this.isBusy = false;
+                }
+            } 
+            catch {
+                this.isBusy = false;
+            }
+        },
         formatDate(date: string) {
             return moment(date).format('DD.MM.yyyy');
         },
@@ -87,7 +128,7 @@ export default defineComponent({
                 this.items = response.data;
             }
             catch {
-                this.alert = { type: "danger", text: "Wystąpił błąd" };;
+                this.alert = { type: "danger", text: "Wystąpił błąd" };
             }
             finally {
                 this.isBusy = false;
