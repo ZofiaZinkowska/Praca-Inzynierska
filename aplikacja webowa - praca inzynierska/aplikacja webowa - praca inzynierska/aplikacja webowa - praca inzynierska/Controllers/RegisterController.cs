@@ -35,9 +35,9 @@ namespace aplikacja_webowa___praca_inzynierska.Controllers
                 return registerEntry;
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("Remove")]
 
-        public ActionResult<bool> Delete(int id)
+        public ActionResult<bool> Remove(int id)
         {
                 //Delete item by id
                 var isDeleted = _registerRepository.Delete(id);
