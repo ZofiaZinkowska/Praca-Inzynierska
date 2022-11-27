@@ -93,12 +93,18 @@
     }
 }
 </style>
+<script setup lang="ts">
+import { TaxonomyServiceKey } from '@/api/TaxonomyService';
+import { inject } from 'vue';
+const taxonomyService = inject(TaxonomyServiceKey)!;
+
+defineExpose({taxonomyService});
+</script>
 <script lang="ts">
 import PageComponent from "../components/PageComponent.vue";
 import { defineComponent, type Directive } from 'vue';
 import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 import type { TaxonomyItemDetails } from '../contract/TaxonomyItemDetails';
-import axios from 'axios';
 import type { SearchTaxonomyItem } from '../contract/SearchTaxonomyItem';
 import SpinnerComponent from '../components/SpinnerComponent.vue';
 import QrcodeVue from 'qrcode.vue';
@@ -158,10 +164,7 @@ export default defineComponent({
             }
             try {
                 this.isBusy = true;
-                var response = await axios.get<TaxonomyItemDetails>("https://localhost:5001/Taxonomy/Details", {
-                    params: { id }
-                });
-                this.details = response.data;
+                this.details = await this.taxonomyService.details(id);
             }
             finally {
                 this.isBusy = false;
@@ -175,8 +178,7 @@ export default defineComponent({
             try {
                 this.isFinding = true;
                 this.lastFoundMatch = undefined;
-                const response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Find", { params: { code } });
-                const items = response.data;
+                const items = await this.taxonomyService.find(code);
                 const input = this.$refs.taxonomyInput as any;
                 if (items.length === 0) {
                     input.selectItem(undefined);

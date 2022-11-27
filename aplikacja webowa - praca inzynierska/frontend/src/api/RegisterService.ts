@@ -1,7 +1,10 @@
 import type { SortBy, SortDirection } from "@/components/SortDescription";
 import type { ListRegisterEntriesItem } from "@/contract/ListRegisterEntriesItem";
 import type { SaveRegisterEntryRequest } from "@/contract/SaveRegisterEntryRequest";
+import type { InjectionKey } from "vue";
 import { ApiService } from "./ApiService";
+
+export const RegisterServiceKey: InjectionKey<RegisterService> = Symbol();
 
 export class RegisterService extends ApiService {
 

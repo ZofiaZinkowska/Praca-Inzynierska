@@ -67,10 +67,19 @@ tr:hover .hover-icon {
     opacity: initial;
 }
 </style>
+<script setup lang="ts">
+import { RegisterServiceKey } from '@/api/RegisterService';
+import { TaxonomyServiceKey } from '@/api/TaxonomyService';
+import { inject } from 'vue';
+
+const registerService = inject(RegisterServiceKey)!;
+const taxonomyService = inject(TaxonomyServiceKey)!;
+
+defineExpose({registerService, taxonomyService});
+</script>
 <script lang="ts">
 
 import type { ListRegisterEntriesItem } from '../contract/ListRegisterEntriesItem';
-import axios from 'axios';
 import { defineComponent, type Directive } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
 import type { Alert } from '@/components/Alert';
@@ -81,7 +90,6 @@ import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.v
 import moment from 'moment';
 //@ts-ignore
 import print from 'vue3-print-nb';
-import type { TaxonomyItemDetails } from '@/contract/TaxonomyItemDetails';
 import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
 
 interface Data {
@@ -97,14 +105,12 @@ export default defineComponent({
         async filter(taxonomyID: string) {
             try {
                 this.isBusy = true;
-                const response = await axios.get<TaxonomyItemDetails>("https://localhost:5001/Taxonomy/Details", {
-                    params: { id: taxonomyID }
-                });
-                if (!!response.data) {
+                const details = await this.taxonomyService.details(taxonomyID);
+                if (!!details) {
                     const taxonomyInput = this.$refs.taxonomyInput as any;
                     const item: SearchTaxonomyItem = {
-                        scientificName: response.data.scientificName,
-                        scientificNameAuthor: response.data.scientificNameAuthor,
+                        scientificName: details.scientificName,
+                        scientificNameAuthor: details.scientificNameAuthor,
                         taxonomyID,
                     };
                     taxonomyInput.selectItem(item);
@@ -127,10 +133,7 @@ export default defineComponent({
             try {
                 this.alert = undefined;
                 this.isBusy = true;
-                var response = await axios.get<ListRegisterEntriesItem[]>("https://localhost:5001/Register/List", {
-                    params: { keyword, sortBy: this.sort?.by, sortDirection: this.sort?.direction }
-                });
-                this.items = response.data;
+                this.items = await this.registerService.list(keyword, this.sort?.by, this.sort?.direction);
             }
             catch {
                 this.alert = { type: "danger", text: "Wystąpił błąd" };
@@ -144,7 +147,7 @@ export default defineComponent({
                 this.alert = undefined;
                 this.isBusy = true;
                 const itemIndex = this.items.indexOf(item);
-                await axios.delete(`https://localhost:5001/Register/Delete?id=${item.id}`);
+                await this.registerService.remove(item.id);
                 this.items.splice(itemIndex, 1);
             }
             catch {

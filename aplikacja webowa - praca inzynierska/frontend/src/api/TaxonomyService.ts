@@ -1,7 +1,10 @@
 import type { SaveTaxonomyCodeRequest } from "@/contract/SaveTaxonomyCodeRequest";
 import type { SearchTaxonomyItem } from "@/contract/SearchTaxonomyItem";
 import type { TaxonomyItemDetails } from "@/contract/TaxonomyItemDetails";
+import type { InjectionKey } from "vue";
 import { ApiService } from "./ApiService";
+
+export const TaxonomyServiceKey: InjectionKey<TaxonomyService> = Symbol();
 
 export class TaxonomyService extends ApiService {
 

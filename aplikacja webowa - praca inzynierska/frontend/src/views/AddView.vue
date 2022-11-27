@@ -25,8 +25,17 @@
         </div>
     </page-component>
 </template>
+<script setup lang="ts">
+import { RegisterServiceKey } from '@/api/RegisterService';
+import { TaxonomyServiceKey } from '@/api/TaxonomyService';
+import { inject } from 'vue';
+
+const registerService = inject(RegisterServiceKey)!;
+const taxonomyService = inject(TaxonomyServiceKey)!;
+
+defineExpose({registerService, taxonomyService});
+</script>
 <script lang="ts">
-import axios from 'axios';
 import type { SaveRegisterEntryRequest } from '../contract/SaveRegisterEntryRequest';
 import { defineComponent } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
@@ -90,10 +99,10 @@ export default defineComponent({
                 this.alert = undefined;
                 this.isSaving = true;
                 const request: SaveRegisterEntryRequest = { taxonomyID: this.taxonomyItem!.taxonomyID };
-                await axios.put("https://localhost:5001/Register/Add", request);
+                await this.registerService.add(request);
                 if (!!this.lastSearchedCode) {
                     const codeRequest: SaveTaxonomyCodeRequest = { taxonomyID: this.taxonomyItem!.taxonomyID, code: this.lastSearchedCode };
-                    await axios.put("https://localhost:5001/Taxonomy/AddCode", codeRequest);
+                    await this.taxonomyService.addCode(codeRequest);
                 }
                 this.$router.push({ name: "List" });
             }
@@ -113,8 +122,7 @@ export default defineComponent({
                 this.alert = undefined;
                 this.isFinding = true;
                 this.lastFoundMatch = undefined;
-                const response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Find", { params: { code } });
-                const items = response.data;
+                const items = await taxonomyService.find(code);
                 const input = this.$refs.taxonomyInput as any;
                 if (items.length === 0) {
                     input.selectItem(undefined);

@@ -17,6 +17,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 /* import specific icons */
 import { faFilter, faFolderTree, faSearch, faSort, faSortAsc, faSortDesc, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { RegisterService, RegisterServiceKey } from './api/RegisterService';
+import { TaxonomyService, TaxonomyServiceKey } from './api/TaxonomyService';
 
 /* add icons to the library */
 library.add(faSearch, faSort, faSortAsc, faSortDesc, faFilter, faFolderTree, faXmark);
@@ -25,4 +27,6 @@ const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.use(router);
 app.use(BootstrapVue3);
+app.provide(RegisterServiceKey, new RegisterService());
+app.provide(TaxonomyServiceKey, new TaxonomyService());
 app.mount('#app');
