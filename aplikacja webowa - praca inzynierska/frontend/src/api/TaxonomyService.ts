@@ -17,6 +17,6 @@ export class TaxonomyService extends ApiService {
     }
 
     public find(code: string) {
-        return this.get<SearchTaxonomyItem[]>('/Taxonomyy/Find', { code });
+        return this.get<SearchTaxonomyItem[]>('/Taxonomy/Find', { code });
     }
 }
