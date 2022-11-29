@@ -11,7 +11,7 @@ namespace aplikacja_webowa___praca_inzynierska
 {
     public class Startup
     {
-        private const string DbName = "Register.db";
+        private const string DbPath = "/var/db/Register.db";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,7 +24,7 @@ namespace aplikacja_webowa___praca_inzynierska
         {
             services.AddControllers();
 
-            services.AddSingleton<ILiteDatabase>(x => new LiteDatabase(DbName));
+            services.AddSingleton<ILiteDatabase>(x => new LiteDatabase(DbPath));
 
             services.AddSingleton<ITaxonomyProvider,TaxonomyProvider>();
 
