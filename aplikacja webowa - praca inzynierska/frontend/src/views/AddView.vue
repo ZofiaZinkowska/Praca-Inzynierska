@@ -25,17 +25,10 @@
         </div>
     </page-component>
 </template>
-<script setup lang="ts">
+<script lang="ts">
 import { RegisterServiceKey } from '@/api/RegisterService';
 import { TaxonomyServiceKey } from '@/api/TaxonomyService';
 import { inject } from 'vue';
-
-const registerService = inject(RegisterServiceKey)!;
-const taxonomyService = inject(TaxonomyServiceKey)!;
-
-defineExpose({registerService, taxonomyService});
-</script>
-<script lang="ts">
 import type { SaveRegisterEntryRequest } from '../contract/SaveRegisterEntryRequest';
 import { defineComponent } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
@@ -66,6 +59,11 @@ export default defineComponent({
             isSaving: false,
             lastFoundMatch: undefined, 
         };
+    },
+    setup() {
+        const registerService = inject(RegisterServiceKey)!;
+        const taxonomyService = inject(TaxonomyServiceKey)!;
+        return {registerService, taxonomyService};
     },
     mounted() {
         const input = this.$refs.codeInput as HTMLInputElement;

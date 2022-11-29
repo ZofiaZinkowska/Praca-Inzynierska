@@ -93,16 +93,10 @@
     }
 }
 </style>
-<script setup lang="ts">
-import { TaxonomyServiceKey } from '@/api/TaxonomyService';
-import { inject } from 'vue';
-const taxonomyService = inject(TaxonomyServiceKey)!;
-
-defineExpose({taxonomyService});
-</script>
 <script lang="ts">
+import { TaxonomyServiceKey } from '@/api/TaxonomyService';
 import PageComponent from "../components/PageComponent.vue";
-import { defineComponent, type Directive } from 'vue';
+import { defineComponent, inject, type Directive } from 'vue';
 import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 import type { TaxonomyItemDetails } from '../contract/TaxonomyItemDetails';
 import type { SearchTaxonomyItem } from '../contract/SearchTaxonomyItem';
@@ -135,6 +129,10 @@ export default defineComponent({
             lastSearchedCode: undefined,
             lastFoundMatch: undefined,
         };
+    },
+    setup() {
+        const taxonomyService = inject(TaxonomyServiceKey)!;
+        return {taxonomyService};
     },
     computed: {
         isCodeUnmapped() {

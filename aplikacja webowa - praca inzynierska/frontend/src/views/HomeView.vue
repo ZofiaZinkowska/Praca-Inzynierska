@@ -8,6 +8,10 @@
         </p>
    </page-component>
 </template>
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from "vue";
 import PageComponent from "../components/PageComponent.vue";
+
+export default defineComponent({components: {PageComponent}});
+
 </script>

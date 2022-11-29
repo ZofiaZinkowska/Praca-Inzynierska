@@ -67,18 +67,10 @@ tr:hover .hover-icon {
     opacity: initial;
 }
 </style>
-<script setup lang="ts">
+<script lang="ts">
 import { RegisterServiceKey } from '@/api/RegisterService';
 import { TaxonomyServiceKey } from '@/api/TaxonomyService';
 import { inject } from 'vue';
-
-const registerService = inject(RegisterServiceKey)!;
-const taxonomyService = inject(TaxonomyServiceKey)!;
-
-defineExpose({registerService, taxonomyService});
-</script>
-<script lang="ts">
-
 import type { ListRegisterEntriesItem } from '../contract/ListRegisterEntriesItem';
 import { defineComponent, type Directive } from 'vue';
 import PageComponent from '../components/PageComponent.vue';
@@ -100,6 +92,11 @@ interface Data {
 export default defineComponent({
     data(): Data {
         return { items: [], alert: undefined, isBusy: false, sort: undefined };
+    },
+    setup() {
+        const registerService = inject(RegisterServiceKey)!;
+        const taxonomyService = inject(TaxonomyServiceKey)!;
+        return {registerService, taxonomyService};
     },
     methods: {
         async filter(taxonomyID: string) {
