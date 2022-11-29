@@ -2,7 +2,7 @@
 
 import { plantRegisterHelper } from "../support/plantRegisterHelper";
 
-const plantRegister = 'http://127.0.0.1:5173/Taxonomy';
+const plantRegister = '/Taxonomy';
 
 describe('The „plant register” application', () => {
     before(() => {
