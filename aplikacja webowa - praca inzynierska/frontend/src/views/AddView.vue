@@ -122,7 +122,7 @@ export default defineComponent({
                 this.alert = undefined;
                 this.isFinding = true;
                 this.lastFoundMatch = undefined;
-                const items = await taxonomyService.find(code);
+                const items = await this.taxonomyService.find(code);
                 const input = this.$refs.taxonomyInput as any;
                 if (items.length === 0) {
                     input.selectItem(undefined);
