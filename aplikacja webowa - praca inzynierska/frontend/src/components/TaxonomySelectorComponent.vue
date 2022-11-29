@@ -2,11 +2,11 @@
     <simple-type-ahead ref="input" type="search" class="form-control" :items="items" :item-projection="projectItem" :min-input-length="3" @on-input="load($event.input)" @select-item="$emit('itemSelected', $event)"></simple-type-ahead>
 </template>
 <script lang="ts">
+import { TaxonomyServiceKey } from '@/api/TaxonomyService';
 import type { SearchTaxonomyItem } from '@/contract/SearchTaxonomyItem';
-import { defineComponent } from 'vue';
+import { defineComponent, inject } from 'vue';
 //@ts-ignore ta paczka nie udostępnia typescript typów
 import simpleTypeAhead from 'vue3-simple-typeahead';
-import axios from 'axios';
 import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css';
 
 interface Data { items: SearchTaxonomyItem[] }
@@ -19,6 +19,11 @@ export default defineComponent({
             return true;
         }
     },
+    setup() {
+        const taxonomyService = inject(TaxonomyServiceKey)!;
+        return {taxonomyService};
+    },
+    expose: ['selectItem'],
     methods: {
         projectItem(item?: SearchTaxonomyItem) {
             if(!item)
@@ -38,13 +43,7 @@ export default defineComponent({
             }
             if (keyword.length < 3)
                 return;
-            const params = {
-                keyword, count: 8
-            };
-            const response = await axios.get<SearchTaxonomyItem[]>("https://localhost:5001/Taxonomy/Search",{
-                params
-            });
-            this.items = response.data;
+            this.items = await this.taxonomyService.search(keyword, 8);
         },
     },
     data(): Data {

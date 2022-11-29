@@ -19,4 +19,8 @@ export class TaxonomyService extends ApiService {
     public find(code: string) {
         return this.get<SearchTaxonomyItem[]>('/Taxonomy/Find', { code });
     }
+
+    public search(keyword: string, count?: number) {
+        return this.get<SearchTaxonomyItem[]>('/Taxonomy/Search',{ keyword, count});
+    }
 }
