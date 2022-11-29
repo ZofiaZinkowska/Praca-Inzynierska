@@ -47,7 +47,7 @@ namespace aplikacja_webowa___praca_inzynierska.Services
         private IEnumerable<TaxonomyItem> LoadTaxonomy()
         {
             //Loading the file classification.txt
-            using var input = new StreamReader(File.OpenRead("content/classification.txt"));
+            using var input = new StreamReader(File.OpenRead("Content/classification.txt"));
             
             //Skip first line with headings 
             input.ReadLine();

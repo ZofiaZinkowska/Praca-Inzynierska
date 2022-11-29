@@ -43,7 +43,8 @@ namespace aplikacja_webowa___praca_inzynierska
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //TODO https
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors(cors=> cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
