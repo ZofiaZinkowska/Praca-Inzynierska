@@ -28,8 +28,10 @@
             <div id="print-label">
                 <div class="d-flex align-items-center">
                     <h5 class="mb-0 text-primary">{{ details.scientificName }}</h5>
-                    <b-button v-print="'#print-label'" variant="success" class="ms-auto print-button">Drukuj etykietę
-                    </b-button>
+                    <div class="ms-auto hide-in-print d-flex gap-4 align-items-center">
+                        <b-form-checkbox switch="true" v-model="printQr">Kod QR</b-form-checkbox>
+                        <b-button v-print="'#print-label'" variant="success">Drukuj etykietę</b-button>
+                    </div>
                 </div>
                 <div class="d-flex align-items-start mt-2">
                     <b-table-simple class="w-auto details-table">
@@ -63,7 +65,8 @@
                         </b-tr>
                     </b-table-simple>
                     <div class="ms-auto mt-auto mb-auto">
-                        <qrcode-vue :value="details.id" level="L" :size="200"></qrcode-vue>
+                        <qrcode-vue v-if="printQr" :value="details.id" level="L" :size="200"></qrcode-vue>
+                        <barcode v-else :value="details.id" format="CODE128" :width="2.5" :height="200"></barcode>
                     </div>
                 </div>
             </div>
@@ -77,8 +80,8 @@
 }
 
 @media print {
-    .print-button {
-        display: none;
+    .hide-in-print {
+        display: none !important;
     }
 
     #print-label {
@@ -96,7 +99,7 @@
 <script lang="ts">
 import { TaxonomyServiceKey } from '@/api/TaxonomyService';
 import PageComponent from "../components/PageComponent.vue";
-import { defineComponent, inject, type Directive } from 'vue';
+import { defineComponent, inject, type Component, type Directive } from 'vue';
 import TaxonomySelectorComponent from '../components/TaxonomySelectorComponent.vue';
 import type { TaxonomyItemDetails } from '../contract/TaxonomyItemDetails';
 import type { SearchTaxonomyItem } from '../contract/SearchTaxonomyItem';
@@ -105,6 +108,10 @@ import QrcodeVue from 'qrcode.vue';
 //@ts-ignore
 import print from 'vue3-print-nb';
 import { useRoute } from "vue-router";
+//@ts-ignore
+import Barcode from 'vue3-barcode';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { BFormGroup, BInputGroup, BFormInput, BButton, BTableSimple, BTr, BTh, BTd } from 'bootstrap-vue-3';
 
 interface Data {
     isBusy: boolean;
@@ -113,6 +120,7 @@ interface Data {
     isFinding: boolean;
     lastSearchedCode?: string;
     lastFoundMatch?: SearchTaxonomyItem;
+    printQr: boolean;
 }
 
 interface MatchedSearchTaxonomyItem extends SearchTaxonomyItem {
@@ -128,11 +136,12 @@ export default defineComponent({
             isFinding: false,
             lastSearchedCode: undefined,
             lastFoundMatch: undefined,
+            printQr: false,
         };
     },
     setup() {
         const taxonomyService = inject(TaxonomyServiceKey)!;
-        return {taxonomyService};
+        return { taxonomyService };
     },
     computed: {
         isCodeUnmapped() {
@@ -142,7 +151,7 @@ export default defineComponent({
     mounted() {
         const route = useRoute();
         const id = route.params.id as string;
-        if (!!id){
+        if (!!id) {
             this.find(id);
         } else {
             const input = this.$refs.codeInput as HTMLInputElement;
@@ -154,7 +163,7 @@ export default defineComponent({
             if (item?.matchedCode !== this.currentCode) {
                 this.currentCode = undefined;
             }
-            this.$router.replace({name:'Taxonomy', params:{id: this.currentCode}});
+            this.$router.replace({ name: 'Taxonomy', params: { id: this.currentCode } });
             const id = item?.taxonomyID;
             if (!id) {
                 this.details = undefined;
@@ -170,7 +179,7 @@ export default defineComponent({
         },
         async find(code?: string) {
             this.lastSearchedCode = code;
-            this.$router.replace({name:'Taxonomy', params:{id: code}});
+            this.$router.replace({ name: 'Taxonomy', params: { id: code } });
             if (!code)
                 return;
             try {
@@ -192,7 +201,7 @@ export default defineComponent({
             }
         }
     },
-    components: { PageComponent, TaxonomySelectorComponent, SpinnerComponent, QrcodeVue },
+    components: { PageComponent, TaxonomySelectorComponent, SpinnerComponent, QrcodeVue, Barcode: Barcode as Component },
     directives: { print: print as Directive }
 });
 </script>
