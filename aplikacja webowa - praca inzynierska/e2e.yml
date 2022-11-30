@@ -1,20 +1,18 @@
-name: "ewidencja"
-volumes:
-  db: {}
+name: "ewidencja-e2e"
 services:
   backend:
     image: "zz/ewidencja/backend:0.1.0"
-    container_name: "ewidencja-backend"
+    container_name: "ewidencja-backend-e2e"
     build: "./aplikacja webowa - praca inzynierska/aplikacja webowa - praca inzynierska/"
     ports:
-      - "5000:80"
-    volumes:
-      - "db:/var/db"
+      - "4000:80"
   frontend:
     image: "zz/ewidencja/frontend:0.1.0"
-    container_name: "ewidencja-frontend"
+    container_name: "ewidencja-frontend-e2e"
     build: "./frontend/"
     ports:
-      - "5173:5173"
+      - "4173:5173"
     depends_on:
       - "backend"
+    environment:
+      - "VITE_BACKEND_PORT=4000"
