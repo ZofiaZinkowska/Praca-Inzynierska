@@ -13,8 +13,15 @@ describe('The „plant register” application', () => {
         plantRegisterHelper.verifyPageTitle('Dodawanie nowego wpisu');
     });
     
-    it('', () => {
-        plantRegisterHelper.searchIDByKeyword();
+    it('should add plant to register', () => {
+        plantRegisterHelper.searchPlantByKeywordAndSave();
+        plantRegisterHelper.deletePlantFromRegister();
+    });
+
+    it('should add plant with id to register',() =>{
+        cy.visitPage('/Add');
         plantRegisterHelper.searchPlantByKeyword();
+        plantRegisterHelper.searchID();
+        plantRegisterHelper.deletePlantFromRegister();
     });
 })

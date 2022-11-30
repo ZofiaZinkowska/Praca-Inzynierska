@@ -2,18 +2,22 @@
 
 import { plantRegisterHelper } from "../support/plantRegisterHelper";
 
-const plantRegister = '/Taxonomy';
+const classification = '/Taxonomy';
 
 describe('The „plant register” application', () => {
     before(() => {
-        cy.visitPage(plantRegister)
+        cy.visitPage(classification)
     })
 
     it('should contain proper page title', () => {
         plantRegisterHelper.verifyPageTitle('Klasyfikacja');
     });
 
-    it('should search id by keyword', () => {
-        plantRegisterHelper.searchID();
+    it('should search plat name by keyword in the classification', () => {
+        plantRegisterHelper.searchPlantByKeyword();
+    });
+
+    it('should print the label', () => {
+        plantRegisterHelper.prinPlantLabel();
     });
 })

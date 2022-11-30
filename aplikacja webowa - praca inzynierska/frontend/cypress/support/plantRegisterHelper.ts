@@ -7,22 +7,40 @@ class PlantRegisterHelper {
     }
 
     searchID(){
-        cy.get('.input-group').within(() => {
-            cy.get('.form-control').type('123456').should('have.value','')
-        })
-        cy.get('.btn-content .svg-inline--fa').click();
+        cy.get('.input-group')
+        .type('test').should('have.value','');
+        cy.contains('.btn-content', 'Zapisz').click();
     }
 
     searchIDByKeyword(){
         cy.get('.input-group')
-        .type('1234567').should('have.value','')
-        cy.get('.btn-content .svg-inline--fa').click();
+        .type('test').should('have.value','');
+        cy.get('button .btn-content .svg-inline--fa').click();
+        cy.contains('.btn-content', 'Zapisz').click();
     }
 
     searchPlantByKeyword(){
         cy.get('.simple-typeahead-input')
-        .type('Abutilon circinatum ((Willd. ex Spreng.) G.Don)').should('have.value','Abutilon circinatum ((Willd. ex Spreng.) G.Don)').click();
+        .type('blob').should('have.value','blob').click();
+        cy.get('.simple-typeahead-list-item').click();
+    }
+
+    searchPlantByKeywordAndSave(){
+        cy.get('.simple-typeahead-input')
+        .type('blob').should('have.value','blob').click();
+        cy.get('.simple-typeahead-list-item').click();
         cy.contains('.btn-content', 'Zapisz').click();
+    }
+
+    deletePlantFromRegister(){
+        cy.visitPage('/List');
+        cy.contains('tr', 'Abelmoschus sublobatus (C.Presl)').trigger('mouseover').within(()=>{
+            cy.get('button[title="Usuń"]').click();
+        });
+    }
+
+    prinPlantLabel(){
+        cy.contains('button','Drukuj etykietę').click();
     }
 }
 

@@ -3,7 +3,7 @@ import axios, { type Method } from "axios";
 export abstract class ApiService {
 
     private readonly client = axios.create({
-        baseURL: 'http://localhost:5000'
+        baseURL: 'http://localhost:'+(import.meta.env.VITE_BACKEND_PORT || '5000')
     });
 
     private async request<T>(method: Method, url: string, params?: any, data?: any) {
